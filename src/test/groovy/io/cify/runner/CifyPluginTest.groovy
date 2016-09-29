@@ -1,0 +1,32 @@
+package io.cify.runner
+
+import io.cify.runner.tasks.CifyExtensionTask
+import io.cify.runner.tasks.CifyTask
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.testfixtures.ProjectBuilder
+
+/**
+ * Created by FOB Solutions
+ */
+class CifyPluginTest extends GroovyTestCase {
+
+    private Project project
+    private CifyPlugin plugin
+
+    void setUp() {
+        project = ProjectBuilder.builder().build();
+        plugin = new CifyPlugin();
+        plugin.apply(project);
+    }
+
+    void testShouldCreateExtension() {
+        assert project.hasProperty('cify')
+    }
+
+    void testApply() {
+        assert project.tasks["cucumber"] instanceof CifyTask
+        assert project.tasks["help"] instanceof Task
+        assert project.tasks["parameters"] instanceof CifyExtensionTask
+    }
+}

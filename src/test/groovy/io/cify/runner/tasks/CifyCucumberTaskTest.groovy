@@ -1,0 +1,51 @@
+package io.cify.runner.tasks
+
+import io.cify.runner.CifyPlugin
+import io.cify.runner.CifyPluginExtension
+import io.cify.runner.utils.CucumberArgsBuilder
+import io.cify.runner.utils.PluginExtensionManager
+import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
+
+class CifyCucumberTaskTest extends GroovyTestCase {
+
+    CifyCucumberTask cucumberTask
+    Project project
+
+    CifyPluginExtension extension
+    PluginExtensionManager parser
+
+    void setUp() {
+        CifyPlugin plugin = new CifyPlugin()
+        project = ProjectBuilder.builder().build()
+        plugin.apply(project)
+        parser = new PluginExtensionManager(project)
+        parser.setupParameters()
+        extension = project.cify
+
+        cucumberTask = project.task('cucumberTask', type: CifyCucumberTask) as CifyCucumberTask
+        super.setUp()
+    }
+
+    void testArgsContainsAllCucumberOptions() {
+        // set all boolean values true so the options would show up
+        Map params = ["taskName": "testTask"]
+        extension.dryRun = true
+        extension.strict = true
+        extension.strict = true
+
+        List expected = new CucumberArgsBuilder(params["taskName"])
+                .addFeatureDir(extension.featureDirs)
+                .addTags(extension.tags)
+                .addPlugins(extension.cucumberPlugins)
+                .addGlue(extension.gluePackages)
+                .setDryRun(extension.dryRun)
+                .setStrict(extension.strict)
+                .setMonochrome(extension.monochrome)
+                .build()
+
+        List actual = CifyCucumberTask.getCucumberArgs(extension, params["taskName"], null)
+
+        assert expected == actual
+    }
+}
