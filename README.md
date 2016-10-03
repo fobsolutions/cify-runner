@@ -1,6 +1,7 @@
 1. <a href="#what">What Is Cify Runner?</a>
 1. <a href="#usage">How To Use Cify Runner</a>
 1. <a href="#parameters">Available parameters in Cify Runner</a>
+1. <a href="#jenkins">How to configure Cify Runner in Jenkins</a>
 
 <a name="what" />
 ## What Is Cify Runner?
@@ -154,3 +155,26 @@ There are more than different configuration options in Cify Runner.
 |ignoreFailures|Whether to cause a build failure on any test failures.|true,false|
 
 ----------
+
+<a name="jenkins" />
+## How to configure Cify Runner in Jenkins
+
+Cify Runner can be used in Jenkins as a default Gradle project.
+
+### Preconditions
+1. Jenkins with version 2.23+
+1. Gradle plugin installed on Jenkins
+
+### Step-By-Step guide
+
+1. Create freestyle project
+1. Check "Delete workspace before build starts" in Build Environment
+1. Add build step "Invoke Gradle script"
+1. Select use gradle wrapper
+1. To the Tasks input enter "cucumber " with all the parameters you need like "cucumber -Penv=demo -PfarmUrl=http://localhost:4444/wd/hub"
+
+### Cucumber HTML reports with Cify Runner
+
+Users can use default Cucumber HTML report.
+
+Cucumber reports plugin can be found in: <a href="https://github.com/jenkinsci/cucumber-reports-plugin">Cucumber reports plugin</a>
