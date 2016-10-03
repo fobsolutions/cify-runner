@@ -171,7 +171,8 @@ Cify Runner can be used in Jenkins as a default Gradle project.
 1. Check "Delete workspace before build starts" in Build Environment
 1. Add build step "Invoke Gradle script"
 1. Select use gradle wrapper
-1. To the Tasks input enter "cucumber " with all the parameters you need like "cucumber -Penv=demo -PfarmUrl=http://localhost:4444/wd/hub"
+1. Insert "cucumber" with all the parameters you need into Tasks input
+    Example: cucumber -Penv=demo -PfarmUrl=http://localhost:4444/wd/hub
 
 ### Cucumber HTML reports with Cify Runner
 
