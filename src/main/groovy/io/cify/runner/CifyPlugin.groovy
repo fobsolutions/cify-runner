@@ -4,6 +4,7 @@ import io.cify.runner.tasks.CifyExtensionTask
 import io.cify.runner.tasks.CifyTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.Exec
 
 /**
  * Cify plugin.
@@ -34,6 +35,12 @@ class CifyPlugin implements Plugin<Project> {
             doFirst {
                 println(project.cify.helpText)
             }
+        }
+
+        project.task('cloneDeviceFarm', type: Exec) {
+            group = 'Cify'
+            description 'Pulls device farm from GitHub into devicefarm directory'
+            commandLine "git", "clone", "https://github.com/fobsolutions/cify-device-farm", "devicefarm"
         }
     }
 }
