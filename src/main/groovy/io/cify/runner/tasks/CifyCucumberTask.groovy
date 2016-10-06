@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Marker
 import org.apache.logging.log4j.MarkerManager
 import org.apache.logging.log4j.core.Logger
 import org.gradle.api.tasks.JavaExec
+import io.cify.runner.Constants
 
 /**
  * This task is responsible for passing right parameters to CucumberRunner
@@ -36,10 +37,18 @@ class CifyCucumberTask extends JavaExec {
             )
             classpath = project.configurations.testRuntime + project.sourceSets.test.output + project.sourceSets.main.runtimeClasspath
             main = JAVA_EXEC_MAIN
+
             systemProperties = [
                     'task'        : taskParams['taskName'],
                     'capabilities': JsonOutput.toJson(taskParams['capabilities'])
             ]
+
+            System.properties.each { k,v->
+                if(k.toString().startsWith(Constants.CIFY_SYSTEM_PROPERTY_PREFIX)) {
+                    String key = k.toString().replace(Constants.CIFY_SYSTEM_PROPERTY_PREFIX,"")
+                    systemProperties.put(key,v)    }
+            }
+
             super.exec()
 
             LOG.debug(MARKER, this.getName() + " finished")
