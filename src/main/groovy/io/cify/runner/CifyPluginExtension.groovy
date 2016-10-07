@@ -107,8 +107,8 @@ class CifyPluginExtension {
             -PcapabilitiesFilePath  Devices JSON file path. Defaults to capabilities.json
                                     Usage: ./gradlew cucumber -PcapabilitiesFilePath=capabilities.json
 
-            -PremoteUrl             Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string
-                                    Usage: ./gradlew cucumber -PremoteUrl=http://localhost:63342/
+            -PfarmUrl             Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string
+                                    Usage: ./gradlew cucumber -PfarmUrl=http://localhost:63342/
 
             -PextraCapabilities     Map of capabilities to add to every capability in list
                                     Usage: ./gradlew cucumber -PextraCapabilities=remote=http://localhost:63342/&secondParam=123

@@ -44,7 +44,7 @@ class PluginExtensionManager {
         setIgnoreFailures()
         setFeatureDirs()
         setCapabilitiesFilePath()
-        setRemoteUrl()
+        setFarmUrl()
         setExtraCapabilities()
         setCommandLineCapabilities()
 
@@ -129,7 +129,7 @@ class PluginExtensionManager {
             LOG.debug(MARKER, "From env properties: $paramName : $content")
         } else {
             content = project.extensions.getByName('cify').getProperties().get(paramName)
-            LOG.debug(MARKER, "Using defailt value: $paramName : $content")
+            LOG.debug(MARKER, "Using default value: $paramName : $content")
         }
         return content
     }
@@ -246,12 +246,12 @@ class PluginExtensionManager {
     /**
      * Sets remote url
      * */
-    private void setRemoteUrl() {
+    private void setFarmUrl() {
         UrlValidator urlValidator = new UrlValidator();
         String value = getValue("farmUrl")
         if (urlValidator.isValid(value) || value.isEmpty()) {
             project.cify.farmUrl = value
-        } else throw new CifyPluginException("Url " + value + " specified by remoteUrl parameter is not valid!")
+        } else throw new CifyPluginException("Url " + value + " specified by farmUrl parameter is not valid!")
     }
 
     /**

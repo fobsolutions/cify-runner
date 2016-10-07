@@ -99,7 +99,6 @@ class TaskPoolManager {
             }
 
         } catch (all) {
-            LOG.error(MARKER, "Exception occurred when executing tasks in parallel. Cause: " + all.message)
             throw new CifyPluginException("TaskPoolManager: Exception occurred when executing tasks in parallel. Cause: " + all.message)
         }
     }
