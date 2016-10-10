@@ -30,6 +30,8 @@ class CifyTask extends DefaultTask {
 
             List features = project.cify.features
             List capabilitiesSet = project.cify.capabilitiesSet
+            String record = project.cify.record
+            String videoPath = project.cify.videoPath
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -43,6 +45,8 @@ class CifyTask extends DefaultTask {
                     params.put('taskName', taskName)
                     params.put('featurePath', featurePath)
                     params.put('capabilities', capabilities)
+                    params.put('record', record)
+                    params.put('videoPath', videoPath)
 
                     taskPoolManager.addTask(taskName, CifyCucumberTask, params)
                 }

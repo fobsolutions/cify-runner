@@ -114,6 +114,16 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         assert defaultExtension.capabilities.isEmpty()
     }
 
+    void testDefaultRecording() {
+        assert !defaultExtension.record.isEmpty()
+        assert extension.record == defaultExtension.record
+    }
+
+    void testDefaultVideoPath() {
+        assert !defaultExtension.videoPath.isEmpty()
+        assert extension.videoPath == defaultExtension.videoPath
+    }
+
     void testHelpText() {
         String helpText = extension.helpText
         assert !helpText.isEmpty()

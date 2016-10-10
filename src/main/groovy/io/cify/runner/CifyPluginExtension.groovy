@@ -73,6 +73,16 @@ class CifyPluginExtension {
     String capabilities = ""
 
     /**
+     * Video recording parameter from command line. Defaults to false
+     * */
+    String record = "false"
+
+    /**
+     * Location where videos are saved
+     * */
+    String videoPath = "build/cify/videos/"
+
+    /**
      * Generated capabilities list
      * */
     List capabilitiesSet = []
@@ -107,11 +117,17 @@ class CifyPluginExtension {
             -PcapabilitiesFilePath  Devices JSON file path. Defaults to capabilities.json
                                     Usage: ./gradlew cucumber -PcapabilitiesFilePath=capabilities.json
 
-            -PfarmUrl             Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string
+            -PfarmUrl               Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string
                                     Usage: ./gradlew cucumber -PfarmUrl=http://localhost:63342/
 
             -PextraCapabilities     Map of capabilities to add to every capability in list
                                     Usage: ./gradlew cucumber -PextraCapabilities=remote=http://localhost:63342/&secondParam=123
+
+            -Precord                Record video for every device from creating driver til closing driver
+                                    Usage: ./gradlew cucumber -Precord=true
+
+            -PvideoPath             Path where videos are saved
+                                    Usage: ./gradlew cucumber -PvideoPath=project/videos/
 
         Cucumber parameters:
 
