@@ -316,6 +316,25 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         }
     }
 
+    void testRecord() {
+        project.ext.set("record", "true")
+        manager.setupParameters()
+        assert project.cify.record == "true"
+    }
+
+    void testRecordWithInvalid() {
+        project.ext.set("record", "truu")
+        shouldFail {
+            manager.setupParameters()
+        }
+    }
+
+    void testVideoPath() {
+        project.ext.set("videoPath", "results/videos/")
+        manager.setupParameters()
+        assert project.cify.videoPath == "results/videos/"
+    }
+
     private void writeToProperties(Map<String, String> propertiesMap) {
         Properties properties = new Properties()
         propertiesMap.each { k, v -> properties.setProperty(k, v) }
