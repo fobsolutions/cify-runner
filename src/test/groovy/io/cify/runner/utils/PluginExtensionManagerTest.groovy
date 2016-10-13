@@ -114,6 +114,16 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         assert defaultExtension.capabilities.isEmpty()
     }
 
+    void testDefaultRecording() {
+        assert !defaultExtension.videoRecord.isEmpty()
+        assert extension.videoRecord == defaultExtension.videoRecord
+    }
+
+    void testDefaultVideoPath() {
+        assert !defaultExtension.videoDir.isEmpty()
+        assert extension.videoDir == defaultExtension.videoDir
+    }
+
     void testHelpText() {
         String helpText = extension.helpText
         assert !helpText.isEmpty()
@@ -304,6 +314,25 @@ class PluginExtensionManagerTest extends GroovyTestCase {
             project.ext.set("extraCapabilities", "param1=value1&param2=")
             manager.setupParameters()
         }
+    }
+
+    void testRecord() {
+        project.ext.set("videoRecord", "true")
+        manager.setupParameters()
+        assert project.cify.videoRecord == "true"
+    }
+
+    void testRecordWithInvalid() {
+        project.ext.set("videoRecord", "truu")
+        shouldFail {
+            manager.setupParameters()
+        }
+    }
+
+    void testVideoPath() {
+        project.ext.set("videoDir", "results/videos/")
+        manager.setupParameters()
+        assert project.cify.videoDir == "results/videos/"
     }
 
     private void writeToProperties(Map<String, String> propertiesMap) {

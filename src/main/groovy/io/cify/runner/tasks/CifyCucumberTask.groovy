@@ -2,13 +2,13 @@ package io.cify.runner.tasks
 
 import groovy.json.JsonOutput
 import io.cify.runner.CifyPluginExtension
+import io.cify.runner.Constants
 import io.cify.runner.utils.CucumberArgsBuilder
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
 import org.apache.logging.log4j.MarkerManager
 import org.apache.logging.log4j.core.Logger
 import org.gradle.api.tasks.JavaExec
-import io.cify.runner.Constants
 
 /**
  * This task is responsible for passing right parameters to CucumberRunner
@@ -40,13 +40,16 @@ class CifyCucumberTask extends JavaExec {
 
             systemProperties = [
                     'task'        : taskParams['taskName'],
-                    'capabilities': JsonOutput.toJson(taskParams['capabilities'])
+                    'capabilities': JsonOutput.toJson(taskParams['capabilities']),
+                    'videoRecord' : taskParams['videoRecord'],
+                    'videoDir'    : taskParams['videoDir']
             ]
 
-            System.properties.each { k,v->
-                if(k.toString().startsWith(Constants.CIFY_SYSTEM_PROPERTY_PREFIX)) {
-                    String key = k.toString().replace(Constants.CIFY_SYSTEM_PROPERTY_PREFIX,"")
-                    systemProperties.put(key,v)    }
+            System.properties.each { k, v ->
+                if (k.toString().startsWith(Constants.CIFY_SYSTEM_PROPERTY_PREFIX)) {
+                    String key = k.toString().replace(Constants.CIFY_SYSTEM_PROPERTY_PREFIX, "")
+                    systemProperties.put(key, v)
+                }
             }
 
             super.exec()

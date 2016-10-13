@@ -50,6 +50,9 @@ class PluginExtensionManager {
 
         setCapabilities()
         setFeatures()
+
+        setVideoRecord()
+        setVideoDir()
     }
 
     /**
@@ -293,6 +296,25 @@ class PluginExtensionManager {
      * */
     private void setFeatures() {
         project.cify.features = filterFeatures(project.cify.featureDirs.toString(), project.cify.tags.toString())
+    }
+
+    /**
+     * Sets video recording parameter to current run
+     * */
+    private void setVideoRecord() {
+        String value = getValue('videoRecord')
+        if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
+            project.cify.videoRecord = value
+        } else {
+            throw new CifyPluginException("Wrong videoRecord parameter: " + value + " Can be true or false.")
+        }
+    }
+
+    /**
+     * Sets video directory path to current run
+     * */
+    private void setVideoDir() {
+        project.cify.videoDir = getValue('videoDir')
     }
 
     /**
