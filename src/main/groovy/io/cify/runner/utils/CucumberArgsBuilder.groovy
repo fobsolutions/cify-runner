@@ -53,6 +53,11 @@ class CucumberArgsBuilder {
             List pluginsList = plugins.tokenize(',')
             pluginsList.each {
                 this.plugins << PLUGIN_OPTION
+
+                if ((it as String).startsWith("json:")) {
+                    it = it + taskName
+                }
+
                 this.plugins << it
             }
         }

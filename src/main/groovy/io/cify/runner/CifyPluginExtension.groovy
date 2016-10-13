@@ -25,7 +25,7 @@ class CifyPluginExtension {
     /**
      * Output formats for cucumber test results. Defaults to 'pretty,json:build/cify/reports/json/'
      */
-    String cucumberPlugins = "pretty"
+    String cucumberPlugins = "pretty,json:build/cify/reports/json/"
 
     /**
      * Execute a test dry run without actually executing tests. Defaults to false
