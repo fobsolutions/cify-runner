@@ -153,8 +153,8 @@ There are more than different configuration options in Cify Runner.
 |strict|Strict mode, fail if there are pending or skipped tests. Defaults to false|true,false|
 |monochrome|Format output in single color. Defaults to false|true,false|
 |ignoreFailures|Whether to cause a build failure on any test failures.|true,false|
-|record|Whether to record all devices|true,false|
-|videoPath|Locations where to save videos|relative path|
+|videoRecord|Whether to record all devices. Defaults to false|true,false|
+|videoDir|Directory where to save videos. Defaults to build/cify/videos|relative path|
 
 ----------
 

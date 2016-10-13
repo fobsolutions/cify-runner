@@ -115,13 +115,13 @@ class PluginExtensionManagerTest extends GroovyTestCase {
     }
 
     void testDefaultRecording() {
-        assert !defaultExtension.record.isEmpty()
-        assert extension.record == defaultExtension.record
+        assert !defaultExtension.videoRecord.isEmpty()
+        assert extension.videoRecord == defaultExtension.videoRecord
     }
 
     void testDefaultVideoPath() {
-        assert !defaultExtension.videoPath.isEmpty()
-        assert extension.videoPath == defaultExtension.videoPath
+        assert !defaultExtension.videoDir.isEmpty()
+        assert extension.videoDir == defaultExtension.videoDir
     }
 
     void testHelpText() {
@@ -317,22 +317,22 @@ class PluginExtensionManagerTest extends GroovyTestCase {
     }
 
     void testRecord() {
-        project.ext.set("record", "true")
+        project.ext.set("videoRecord", "true")
         manager.setupParameters()
-        assert project.cify.record == "true"
+        assert project.cify.videoRecord == "true"
     }
 
     void testRecordWithInvalid() {
-        project.ext.set("record", "truu")
+        project.ext.set("videoRecord", "truu")
         shouldFail {
             manager.setupParameters()
         }
     }
 
     void testVideoPath() {
-        project.ext.set("videoPath", "results/videos/")
+        project.ext.set("videoDir", "results/videos/")
         manager.setupParameters()
-        assert project.cify.videoPath == "results/videos/"
+        assert project.cify.videoDir == "results/videos/"
     }
 
     private void writeToProperties(Map<String, String> propertiesMap) {

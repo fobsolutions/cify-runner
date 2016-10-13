@@ -73,14 +73,14 @@ class CifyPluginExtension {
     String capabilities = ""
 
     /**
-     * Video recording parameter from command line. Defaults to false
+     * Enable video recording from command line. Defaults to false
      * */
-    String record = "false"
+    String videoRecord = "false"
 
     /**
-     * Location where videos are saved
+     * Directory where videos are saved. Defaults to build/cify/videos/
      * */
-    String videoPath = "build/cify/videos/"
+    String videoDir = "build/cify/videos/"
 
     /**
      * Generated capabilities list
@@ -123,16 +123,16 @@ class CifyPluginExtension {
             -PextraCapabilities     Map of capabilities to add to every capability in list
                                     Usage: ./gradlew cucumber -PextraCapabilities=remote=http://localhost:63342/&secondParam=123
 
-            -Precord                Record video for every device from creating driver til closing driver
-                                    Usage: ./gradlew cucumber -Precord=true
+            -PvideoRecord           Record video for every device from creating driver til closing driver. Defaults to false
+                                    Usage: ./gradlew cucumber -PvideoRecord=true
 
-            -PvideoPath             Path where videos are saved
-                                    Usage: ./gradlew cucumber -PvideoPath=project/videos/
+            -PvideoDir              Directory where videos are saved. Defaults to build/cify/videos
+                                    Usage: ./gradlew cucumber -PvideoDir=project/videos/
 
         Cucumber parameters:
 
-            -PglueDirs          Set a package to search step definitions in
-                                Usage:  ./gradlew cucumber -PglueDirs=com.example.stepdefinitions,com.example2.stepdefinitions
+            -PgluePackages      Set a package to search step definitions in
+                                Usage:  ./gradlew cucumber -PgluePackages=com/example/stepdefinitions,com/example2/stepdefinitions
 
             -PfeatureDirs       Set a package to search feature files,
                                 Usage:  ./gradlew cucumber
