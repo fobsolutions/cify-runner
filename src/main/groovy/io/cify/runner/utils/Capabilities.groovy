@@ -13,30 +13,6 @@ class Capabilities {
     LazyMap android
     LazyMap browser
 
-    LazyMap getIos() {
-        return ios
-    }
-
-    void setIos(ios) {
-        this.ios = ios
-    }
-
-    LazyMap getAndroid() {
-        return android
-    }
-
-    void setAndroid(android) {
-        this.android = android
-    }
-
-    LazyMap getBrowser() {
-        return browser
-    }
-
-    void setBrowser(browser) {
-        this.browser = browser
-    }
-
     /**
      * Add capability to every object
      * */
