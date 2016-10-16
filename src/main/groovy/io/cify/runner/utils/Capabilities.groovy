@@ -42,6 +42,6 @@ class Capabilities {
      * Gets capability identifier from LazyMap
      * */
     private static String getCapabilityIdentifier(LazyMap capability) {
-        capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.values().toString()
+        capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
     }
 }
