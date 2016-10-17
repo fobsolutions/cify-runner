@@ -23,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('io.cify:cify-runner:1.0.0')
+        classpath('io.cify:cify-runner:1.1.0')
     }
 }
 
@@ -37,12 +37,15 @@ Cify runner contains 3 tasks:
 - cucumber
 - help
 - parameters
+- cloneDeviceFarm
 
 Cucumber task collects parameters, device capabilities and feature files, generates task for each feature file, and triggers tests.
 
 Help tasks prints all runner parameters and helping information to console.
 
 Setup parameters task collects all the information from properties file, command line, defaults, devices and holds them as plugin extension
+
+Clones device farm into devicefarm folder from GitHub
 
 ### Capabilities usage
   
