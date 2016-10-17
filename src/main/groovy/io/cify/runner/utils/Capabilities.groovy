@@ -9,33 +9,11 @@ import groovy.json.internal.LazyMap
  */
 class Capabilities {
 
+    private static final CAPABILITY_ID = "capabilityId"
+
     LazyMap ios
     LazyMap android
     LazyMap browser
-
-    LazyMap getIos() {
-        return ios
-    }
-
-    void setIos(ios) {
-        this.ios = ios
-    }
-
-    LazyMap getAndroid() {
-        return android
-    }
-
-    void setAndroid(android) {
-        this.android = android
-    }
-
-    LazyMap getBrowser() {
-        return browser
-    }
-
-    void setBrowser(browser) {
-        this.browser = browser
-    }
 
     /**
      * Add capability to every object
@@ -50,5 +28,20 @@ class Capabilities {
         if (!ios.isEmpty()) {
             ios.putAll(extraCapabilities)
         }
+    }
+
+    /**
+     * Generate unique string from capabilities object
+     * */
+    @Override
+    public String toString() {
+        getCapabilityIdentifier(getBrowser()) + "_" + getCapabilityIdentifier(getAndroid()) + "_" + getCapabilityIdentifier(getIos())
+    }
+
+    /**
+     * Gets capability identifier from LazyMap
+     * */
+    private static String getCapabilityIdentifier(LazyMap capability) {
+        capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
     }
 }

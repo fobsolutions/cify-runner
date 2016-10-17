@@ -39,7 +39,7 @@ class CifyTask extends DefaultTask {
                 String featureName = featureFile.name
 
                 capabilitiesSet.each { Capabilities capabilities ->
-                    String taskName = featureName + capabilities.toString()
+                    String taskName = featureName + "_" + capabilities.toString()
 
                     Map params = [:]
                     params.put('taskName', taskName)
