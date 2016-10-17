@@ -32,7 +32,7 @@ apply plugin: 'cify-runner'
 
 ### Gradle tasks
 
-Cify runner contains 3 tasks:
+Cify runner contains 4 tasks:
 
 - cucumber
 - help
