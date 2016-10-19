@@ -88,6 +88,11 @@ class CifyPluginExtension {
     List capabilitiesSet = []
 
     /**
+     * Credentials of device farm service providers
+     */
+    String credentials = "{}"
+
+    /**
      * Feature files paths with given parameters
      * */
     List features = []
