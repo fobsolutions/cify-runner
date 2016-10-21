@@ -20,7 +20,6 @@ class CifyTask extends DefaultTask {
     private static final Logger LOG = LogManager.getLogger(this.class) as Logger
     private static final Marker MARKER = MarkerManager.getMarker('CIFY TASK') as Marker
 
-
     @TaskAction
     void exec() {
         try {
@@ -32,6 +31,7 @@ class CifyTask extends DefaultTask {
             List capabilitiesSet = project.cify.capabilitiesSet
             String videoRecord = project.cify.videoRecord
             String videoDir = project.cify.videoDir
+            String credentials = project.cify.credentials
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -47,6 +47,7 @@ class CifyTask extends DefaultTask {
                     params.put('capabilities', capabilities)
                     params.put('videoRecord', videoRecord)
                     params.put('videoDir', videoDir)
+                    params.put('credentials', credentials)
 
                     taskPoolManager.addTask(taskName, CifyCucumberTask, params)
                 }

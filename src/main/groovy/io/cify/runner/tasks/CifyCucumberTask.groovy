@@ -42,7 +42,8 @@ class CifyCucumberTask extends JavaExec {
                     'task'        : taskParams['taskName'],
                     'capabilities': JsonOutput.toJson(taskParams['capabilities']),
                     'videoRecord' : taskParams['videoRecord'],
-                    'videoDir'    : taskParams['videoDir']
+                    'videoDir'    : taskParams['videoDir'],
+                    'credentials' : taskParams['credentials']
             ]
 
             System.properties.each { k, v ->

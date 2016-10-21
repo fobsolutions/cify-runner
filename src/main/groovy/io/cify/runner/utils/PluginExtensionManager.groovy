@@ -1,5 +1,7 @@
 package io.cify.runner.utils
 
+import groovy.json.JsonException
+import groovy.json.JsonSlurper
 import org.apache.commons.validator.routines.UrlValidator
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
@@ -47,6 +49,7 @@ class PluginExtensionManager {
         setFarmUrl()
         setExtraCapabilities()
         setCommandLineCapabilities()
+        setCredentials()
 
         setCapabilities()
         setFeatures()
@@ -277,6 +280,21 @@ class PluginExtensionManager {
      * */
     private void setCommandLineCapabilities() {
         project.cify.capabilities = getValue("capabilities")
+    }
+
+    /**
+     * Sets credentials for device farm service providers
+     */
+    private void setCredentials() {
+        String credentials = getValue('credentials')
+        try {
+            new JsonSlurper().parseText(credentials)
+        } catch (JsonException ex1) {
+            throw new CifyPluginException("Credentials is not valid json object: $credentials", ex1)
+        } catch (IllegalArgumentException ex2) {
+            throw new CifyPluginException("Credentials must not be null or empty", ex2)
+        }
+        project.cify.credentials = credentials
     }
 
     /**

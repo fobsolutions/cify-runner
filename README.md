@@ -158,6 +158,7 @@ There are more than different configuration options in Cify Runner.
 |ignoreFailures|Whether to cause a build failure on any test failures.|true,false|
 |videoRecord|Whether to record all devices. Defaults to false|true,false|
 |videoDir|Directory where to save videos. Defaults to build/cify/videos|relative path|
+|credentials|Remote device farm providers credentials to be added to capabilities|{testdroid_apiKey=secret}|
 
 ----------
 

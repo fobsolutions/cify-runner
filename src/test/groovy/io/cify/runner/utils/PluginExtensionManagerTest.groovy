@@ -346,4 +346,24 @@ class PluginExtensionManagerTest extends GroovyTestCase {
             }
         }
     }
+
+    void testValidCredentialsCanBeSet() {
+        project.ext.set("credentials", '{"password":"secret"}')
+        manager.setupParameters()
+        assert project.cify.credentials == '{"password":"secret"}'
+    }
+
+    void testWithInvalidJsonCredentialsFails() {
+        shouldFail() {
+            project.ext.set("credentials", "param1:value1}")
+            manager.setupParameters()
+        }
+    }
+
+    void testWithEmptyCredentialsFails() {
+        shouldFail() {
+            project.ext.set("credentials", "")
+            manager.setupParameters()
+        }
+    }
 }
