@@ -145,7 +145,7 @@ There are more than different configuration options in Cify Runner.
 | threads |Specify number of parallel threads. Default 1 | integers |
 | env | Environment name to use. Properties file name. Valid file name structure is env-demo.properties | demo |
 | capabilitiesFilePath | Capabilities JSON file path. Defaults to capabilities.json | capabilities file name |
-|extraCaps|Map of DesiredCapabilities to add to every capability in list|param=value1&param2=value2...|
+|extraCapabilities|Map of DesiredCapabilities to add to every capability in list|param=value1&param2=value2...|
 |capabilities |Desired capabilities|capabilities JSON file content|
 |farmUrl| Remote URL to every capability (all drirvers will be RemoteWebDrivers) | URL |
 |gluePackages|Set a package to search step definitions from|Path to steps|
