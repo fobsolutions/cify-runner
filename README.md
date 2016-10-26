@@ -23,7 +23,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('io.cify:cify-runner:1.2.0')
+        classpath('io.cify:cify-runner:1.2.1')
     }
 }
 
