@@ -366,4 +366,21 @@ class PluginExtensionManagerTest extends GroovyTestCase {
             manager.setupParameters()
         }
     }
+
+    void testReRunParameter() {
+        project.ext.set("rerunFailedTests", "true")
+        manager.setupParameters()
+        assert project.cify.rerunFailedTests == "true"
+    }
+
+    void testWithEmptyRerunParamFails() {
+        shouldFail() {
+            project.ext.set("rerunFailedTests", "")
+            manager.setupParameters()
+        }
+    }
+
+    void testDefaultReRunParameter() {
+        assert project.cify.rerunFailedTests == "false"
+    }
 }

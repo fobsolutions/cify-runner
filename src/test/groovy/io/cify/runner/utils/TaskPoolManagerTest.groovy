@@ -79,12 +79,29 @@ class TaskPoolManagerTest extends GroovyTestCase {
         }
     }
 
+    void testWithReRunParameter() {
+        project.ext.set('rerunFailedTests', 'true')
+        new PluginExtensionManager(project).setupParameters()
+
+        addFailingTask(2)
+        taskPoolManager.runTasksInParallel(2)
+    }
+
     /**
      * Adds tasks into task pool
      * */
     private void addTestTasks(int count) {
         for (int i = 0; i < count; i++) {
-            taskPoolManager.addTask(i.toString(), TestTask, ['count': i.toString()])
+            taskPoolManager.addTask(i.hashCode() as String, TestTask, ['count': i.toString()])
+        }
+    }
+
+    /**
+     * Adds failing task to task pool
+     * */
+    private void addFailingTask(int count) {
+        for (int i = 0; i < count; i++) {
+            taskPoolManager.addTask(i.toString(), TestTask, ['fail': 'true'])
         }
     }
 }
@@ -104,6 +121,10 @@ class TestTask extends DefaultTask {
 
         String name = Thread.currentThread().getName()
         if (!threadsNames.contains(name)) threadsNames.add(name)
+
+        if (taskParams['fail'] == "true") {
+            throw new CifyPluginException("Task failed")
+        }
     }
 }
 
