@@ -1,3 +1,5 @@
+[ ![Download](https://api.bintray.com/packages/fobsolutions/io.cify/cify-runner/images/download.svg) ](https://bintray.com/fobsolutions/io.cify/cify-runner/_latestVersion)
+
 1. <a href="#what">What Is Cify Runner?</a>
 1. <a href="#usage">How To Use Cify Runner</a>
 1. <a href="#parameters">Available parameters in Cify Runner</a>
@@ -23,7 +25,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath('io.cify:cify-runner:1.2.1')
+        classpath('io.cify:cify-runner:1.2.2')
     }
 }
 
@@ -81,8 +83,7 @@ Set is a list of capabilities to test against. User can define as much capabilit
 
    Valid capability file structure:
 ```
-   {
-     {
+{
   "defaults": {
     "android": {
       "capability": "android",
@@ -114,7 +115,7 @@ Set is a list of capabilities to test against. User can define as much capabilit
     ],
     "ios": [
       {
-       "capability": "ipad",
+        "capability": "ipad",
         "version": "9.3.5"
       }
     ]
