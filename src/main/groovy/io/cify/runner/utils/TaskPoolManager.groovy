@@ -91,11 +91,21 @@ class TaskPoolManager {
                         failedTasks.add(it)
                     }
                 }
-            }
 
-            if (failedTasks.size() > 0) {
-                LOG.warn(MARKER, "Failed to run $failedTasks tasks")
-                //TODO add failed tasks handling
+                if (!failedTasks.isEmpty() && project.cify.rerunFailedTests) {
+
+                    LOG.debug(MARKER, "Re-running failed cases")
+                    LOG.debug(MARKER, "Failed task pool contains " + failedTasks.size() + " tasks")
+                    LOG.debug(MARKER, "Number of threads: " + threadCount)
+
+                    failedTasks.eachParallel {
+                        try {
+                            it.execute()
+                        } catch (all) {
+                            LOG.error(MARKER, "Re-running for task $it.name failed cause $all")
+                        }
+                    }
+                }
             }
 
         } catch (all) {

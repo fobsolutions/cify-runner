@@ -50,6 +50,7 @@ class PluginExtensionManager {
         setExtraCapabilities()
         setCommandLineCapabilities()
         setCredentials()
+        setRerunFailedTests()
 
         setCapabilities()
         setFeatures()
@@ -295,6 +296,19 @@ class PluginExtensionManager {
             throw new CifyPluginException("Credentials must not be null or empty", ex2)
         }
         project.cify.credentials = credentials
+    }
+
+    /**
+     * Sets re-run parameter
+     * */
+    private void setRerunFailedTests() {
+        String rerunEnabled = getValue('rerunFailedTests')
+
+        if (rerunEnabled.equalsIgnoreCase("true") || rerunEnabled.equalsIgnoreCase("false")) {
+            project.cify.rerunFailedTests = rerunEnabled
+        } else {
+            throw new CifyPluginException("Wrong re-run parameter: " + rerunEnabled + " Can be true or false.")
+        }
     }
 
     /**

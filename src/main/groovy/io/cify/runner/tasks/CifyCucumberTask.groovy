@@ -1,6 +1,7 @@
 package io.cify.runner.tasks
 
 import groovy.json.JsonOutput
+import groovy.json.StringEscapeUtils
 import io.cify.runner.CifyPluginExtension
 import io.cify.runner.Constants
 import io.cify.runner.utils.CucumberArgsBuilder
@@ -40,7 +41,7 @@ class CifyCucumberTask extends JavaExec {
 
             systemProperties = [
                     'task'        : taskParams['taskName'],
-                    'capabilities': JsonOutput.toJson(taskParams['capabilities']),
+                    'capabilities': StringEscapeUtils.escapeJava(JsonOutput.toJson(taskParams['capabilities'])),
                     'videoRecord' : taskParams['videoRecord'],
                     'videoDir'    : taskParams['videoDir'],
                     'credentials' : taskParams['credentials']

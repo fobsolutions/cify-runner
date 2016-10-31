@@ -83,6 +83,11 @@ class CifyPluginExtension {
     String videoDir = "build/cify/videos/"
 
     /**
+     * Enable re-running failed tests after full suite. Defaults to false.
+     * */
+    String rerunFailedTests = "false"
+
+    /**
      * Generated capabilities list
      * */
     List capabilitiesSet = []
@@ -133,6 +138,9 @@ class CifyPluginExtension {
 
             -PvideoDir              Directory where videos are saved. Defaults to build/cify/videos
                                     Usage: ./gradlew cucumber -PvideoDir=project/videos/
+
+            -PrerunFailedTests      Re-run failed tests
+                                    Usage: ./gradlew cucumber -PrerunFailedTests=true
 
         Cucumber parameters:
 
