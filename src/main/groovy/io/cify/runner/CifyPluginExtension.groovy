@@ -88,6 +88,11 @@ class CifyPluginExtension {
     String rerunFailedTests = "false"
 
     /**
+     * Repeat matching tasks. Defaults to 1
+     * */
+    String repeat = 1
+
+    /**
      * Generated capabilities list
      * */
     List capabilitiesSet = []
@@ -142,6 +147,9 @@ class CifyPluginExtension {
             -PrerunFailedTests      Re-run failed tests
                                     Usage: ./gradlew cucumber -PrerunFailedTests=true
 
+            -Prepeat                Repeat given tasks
+                                    Usage: ./gradlew cucumber -Prepeat=5
+
         Cucumber parameters:
 
             -PgluePackages      Set a package to search step definitions in
@@ -186,57 +194,69 @@ class CifyPluginExtension {
                             phantomjs
                             edge
 
-        With capabilities file:
-                            Every capability parameter will be added to DesiredCapability object.
-                            Every capability will be executed with all the tests provided.
+        Capabilities file:
 
-                            Every capability MUST HAVE two parameters:
-                            1) capability - system will use this to generate default desired capability for capability.
-                                            See available capabilities on "Usable capabilities" section.
-                            2) capabilityId - system will use this to execute tests against capabilities
+            Every capability parameter will be added to DesiredCapability object.
+            Every capability will be executed with all the tests provided.
 
-                            User can add as many additional parameters as needed (like in 3. capability object)
-                            and they will be added to DesiredCapability object.
-
-                            Valid capabilities file structure:
-                            {
-                              "capabilities": [
-                                {
-                                  "capability": "chrome",
-                                  "capabilityId": "localChrome"
-                                },
-                                {
-                                  "capability": "firefox",
-                                  "capabilityId": "localFirefox"
-                                },
-                                {
-                                  "capability": "safari",
-                                  "capabilityId": "safari",
-                                  "custom": "customValue",
-                                  "customParam2": "Cify"
-                                }
-                              ]
-                            }
-
-                            There is a possibility to create web drivers with only certain capabilities from list
-                            by selecting capabilities with capabilityId.
-
-                            Example:
-                            ./gradlew cucumber -Pcapabilities=localChrome,localFirefox
-
-        Without file:
-                            There is a possibility to run tests without capabilities list.
-                            For that user can add -Pcapabilities parameter to task with capability.
+            Every capability MUST HAVE two parameters:
+            1) capability - system will use this to generate default desired capability for capability.
                             See available capabilities on "Usable capabilities" section.
-                            Every capability will be used to create web driver with all the tests provided.
+            2) capabilityId - system will use this to execute tests against capabilities
 
-                            Example:
-                            ./gradlew cucumber -Pcapabilities=chrome,firefox
+            User can add as many additional parameters as needed (like in 3. capability object)
+            and they will be added to DesiredCapability object.
 
-                            If user don't provide capabilities json and capabilities parameter then tests are triggered,
-                            but user can't call device with DeviceManager.getDevice(), correct way to call driver
-                            is to call DeviceManager.getDevice("chrome") or any other capability from "Usable capabilities"
-                            section.
+            Valid capabilities file structure:
+            {
+              "defaults": {
+                "android": {
+                  "capability": "android",
+                  "version": "5.1"
+                },
+                "ios": {
+                  "capability": "iphone",
+                  "version": "9.3"
+                },
+                "browser": {
+                  "version": "48",
+                  "capability": "chrome"
+                }
+              },
+              "set": {
+                "browser": [
+                  {
+                    "version": "44",
+                    "capability": "safari"
+                  },
+                  {
+                    "version": "12",
+                    "capability": "opera"
+                  },
+                  {
+                    "version": "6.0",
+                    "capability": "android"
+                  }
+                ],
+                "ios": [
+                  {
+                    "capability": "ipad",
+                    "version": "9.3.5"
+                  }
+                ]
+              }
+            }
 
+            In this case there will be 3 different variations (tasks) to run:
+
+            Safari 44, Android 5.1, iOS 9.3.5 on iPad
+            Opera 12, Android 5.1, iOS 9.3.5 on iPad
+            Android 6.0 Browser, Android 5.1, iOS 9.3.5 on iPad
+
+            There is a possibility to pass capabilities from command line.
+
+            Example:
+
+            ./gradlew cucumber -Pcapabilities='{"set": {"browser":[{"version":"52","capability":"chrome"}]}}
         '''
 }

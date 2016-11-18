@@ -51,6 +51,7 @@ class PluginExtensionManager {
         setCommandLineCapabilities()
         setCredentials()
         setRerunFailedTests()
+        setRepeat()
 
         setCapabilities()
         setFeatures()
@@ -308,6 +309,19 @@ class PluginExtensionManager {
             project.cify.rerunFailedTests = rerunEnabled
         } else {
             throw new CifyPluginException("Wrong re-run parameter: " + rerunEnabled + " Can be true or false.")
+        }
+    }
+
+    /**
+     * Sets repeat count
+     * */
+    void setRepeat() {
+        String repeatCount = getValue('repeat')
+
+        if (repeatCount.isInteger()) {
+            project.cify.repeat = repeatCount
+        } else {
+            throw new CifyPluginException("Parameter repeat: $repeatCount is not integer!")
         }
     }
 

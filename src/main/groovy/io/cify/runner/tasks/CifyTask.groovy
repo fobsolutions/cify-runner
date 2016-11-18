@@ -32,6 +32,7 @@ class CifyTask extends DefaultTask {
             String videoRecord = project.cify.videoRecord
             String videoDir = project.cify.videoDir
             String credentials = project.cify.credentials
+            int repeatCount = project.cify.repeat as int
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -39,17 +40,19 @@ class CifyTask extends DefaultTask {
                 String featureName = featureFile.name
 
                 capabilitiesSet.each { Capabilities capabilities ->
-                    String taskName = featureName + "_" + capabilities.toString()
 
-                    Map params = [:]
-                    params.put('taskName', taskName)
-                    params.put('featurePath', featurePath)
-                    params.put('capabilities', capabilities)
-                    params.put('videoRecord', videoRecord)
-                    params.put('videoDir', videoDir)
-                    params.put('credentials', credentials)
+                    for (int i = 0; i < repeatCount; i++) {
+                        String taskName = featureName + "_" + capabilities.toString() + "_" + i
 
-                    taskPoolManager.addTask(taskName, CifyCucumberTask, params)
+                        Map params = [:]
+                        params.put('taskName', taskName)
+                        params.put('featurePath', featurePath)
+                        params.put('capabilities', capabilities)
+                        params.put('videoRecord', videoRecord)
+                        params.put('videoDir', videoDir)
+                        params.put('credentials', credentials)
+                        taskPoolManager.addTask(taskName, CifyCucumberTask, params)
+                    }
                 }
             }
             taskPoolManager.runTasksInParallel(project.cify.threads as Integer)
