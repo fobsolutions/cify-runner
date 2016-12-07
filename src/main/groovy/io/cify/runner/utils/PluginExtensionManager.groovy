@@ -87,9 +87,9 @@ class PluginExtensionManager {
      * */
     boolean hasEnvProperty(String paramName) {
         try {
-            return !envProperties.isEmpty() && !envProperties.getProperty(paramName).isEmpty()
+            !envProperties.isEmpty() && !envProperties.getProperty(paramName).isEmpty()
         } catch (ignored) {
-            return false
+            false
         }
     }
 
@@ -104,7 +104,7 @@ class PluginExtensionManager {
         if (!propertiesFile.exists()) {
             throw new FileNotFoundException("Cannot find file with name $fileName")
         }
-        return propertiesFile
+        propertiesFile
     }
 
     /**
@@ -114,7 +114,7 @@ class PluginExtensionManager {
      * */
     static InputStream readPropertiesFromFile(File propertiesFile) {
         try {
-            return new ByteArrayInputStream(propertiesFile.getBytes());
+            new ByteArrayInputStream(propertiesFile.getBytes());
         } catch (all) {
             throw new CifyPluginException("Cannot read input stream from env properties file $propertiesFile", all)
         }
@@ -139,7 +139,7 @@ class PluginExtensionManager {
             content = project.extensions.getByName('cify').getProperties().get(paramName)
             LOG.debug(MARKER, "Using default value: $paramName : $content")
         }
-        return content
+        content
     }
 
     /**
@@ -380,6 +380,6 @@ class PluginExtensionManager {
         }
 
         LOG.debug("Filtered features with tags: " + project.cify.tags + " and the result were: " + foundFeatures.toArray())
-        return foundFeatures
+        foundFeatures
     }
 }

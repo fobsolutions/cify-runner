@@ -13,7 +13,7 @@ class CifyPluginException extends Exception {
      *
      * @param message message to send
      * */
-    public CifyPluginException(String message) {
+    CifyPluginException(String message) {
         super(message)
     }
 
@@ -23,9 +23,7 @@ class CifyPluginException extends Exception {
      * @message message to send
      * @throwable another exception to pass
      * */
-    public CifyPluginException(String message, Throwable throwable) {
+    CifyPluginException(String message, Throwable throwable) {
         super(message, throwable)
     }
-
-
 }

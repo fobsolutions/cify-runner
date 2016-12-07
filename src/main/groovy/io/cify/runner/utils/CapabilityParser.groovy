@@ -26,7 +26,6 @@ class CapabilityParser {
      *
      * @return list of capabilities
      * */
-    public
     static List generateCapabilitiesList(String capabilitiesFilePath, String extraCapabilities, String farmUrl, String capabilitiesFromCmd) {
 
         LazyMap capabilitiesContent
@@ -35,7 +34,6 @@ class CapabilityParser {
         } else {
             capabilitiesContent = getCapabilitiesFromFile(capabilitiesFilePath.toString())
         }
-
 
         List capabilities = getCapabilitiesVariations(capabilitiesContent)
         LazyMap extraCapabilitiesMap = parseExtraCapabilities(extraCapabilities.toString())
@@ -47,8 +45,7 @@ class CapabilityParser {
         List capabilitiesList = getCapabilitiesList(capabilities, extraCapabilitiesMap)
 
         LOG.debug("Capabilities list is: " + capabilitiesList.toArray())
-
-        return capabilitiesList
+        capabilitiesList
     }
 
     /**
@@ -57,13 +54,12 @@ class CapabilityParser {
      * @param capabilitiesFileContent - capabilities file content
      * @return list of capabilities variations
      * */
-    public static List getCapabilitiesVariations(LazyMap capabilitiesFileContent) {
+    static List getCapabilitiesVariations(LazyMap capabilitiesFileContent) {
         List iOSCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, IOS)
         List browserCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, BROWSER)
         List androidCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, ANDROID)
 
         List capabilitiesSet = []
-
 
         for (int i = 0; i < iOSCapabilitiesList.size(); i++) {
             LazyMap ios = iOSCapabilitiesList.get(i) as LazyMap
@@ -75,12 +71,11 @@ class CapabilityParser {
                     capability.setIos(ios)
                     capability.setAndroid(android)
                     capability.setBrowser(browser)
-
                     capabilitiesSet.add(capability)
                 }
             }
         }
-        return capabilitiesSet
+        capabilitiesSet
     }
 
     /**
@@ -89,15 +84,15 @@ class CapabilityParser {
      * @param capabilityFileContent - Capabilities json file content
      * @type - device type
      * */
-    public static List getCapabilitiesForType(LazyMap capabilityFileContent, String type) {
+    static List getCapabilitiesForType(LazyMap capabilityFileContent, String type) {
         if (capabilityFileContent.get(SET) != null && capabilityFileContent.get(SET)[type] != null) {
             return capabilityFileContent.get(SET)[type] as List
         } else if (capabilityFileContent.get(DEFAULTS) != null && capabilityFileContent.get(DEFAULTS)[type] != null) {
             List typeDefault = []
             typeDefault.add(capabilityFileContent.get(DEFAULTS)[type])
-            return typeDefault
+            typeDefault
         } else {
-            return [[:]]
+            [[:]]
         }
     }
 
@@ -108,7 +103,7 @@ class CapabilityParser {
      * @param extraCapabilities - parameters to add to every capability
      * @return list of capabilities
      * */
-    public static List getCapabilitiesList(List capabilities, LazyMap extraCapabilities) {
+    static List getCapabilitiesList(List capabilities, LazyMap extraCapabilities) {
         List capabilitiesSet
         try {
             capabilitiesSet = capabilities != null ? capabilities : []
@@ -116,9 +111,10 @@ class CapabilityParser {
                 capabilitiesObject.addCapabilitiesToAll(extraCapabilities)
             }
         } catch (all) {
-            throw new CifyPluginException("Cannot get capabilitiesList from map cause: " + all.message, all)
+            LOG.debug(all.message, all)
+            throw new CifyPluginException("Cannot get capabilitiesList from map cause: " + all.message)
         }
-        return capabilitiesSet
+        capabilitiesSet
     }
 
     /**
@@ -127,7 +123,7 @@ class CapabilityParser {
      * @param capabilitiesFilePath
      * @return List
      * */
-    public static LazyMap getCapabilitiesFromFile(String capabilitiesFilePath) {
+    static LazyMap getCapabilitiesFromFile(String capabilitiesFilePath) {
         LazyMap capabilitiesMap = [:]
         try {
             if (capabilitiesFilePath.startsWith("http://")
@@ -145,9 +141,10 @@ class CapabilityParser {
                 }
             }
         } catch (all) {
-            throw new CifyPluginException("Parsing capabilities file content failed with message: " + all.message, all)
+            LOG.debug(all.message, all)
+            throw new CifyPluginException("Parsing capabilities file content failed with message: " + all.message)
         }
-        return capabilitiesMap
+        capabilitiesMap
     }
 
     /**
@@ -156,14 +153,15 @@ class CapabilityParser {
      * @param text - capabilities file content in string format
      * @return LazyMap with capabilities
      * */
-    public static Object readFromContent(String text) {
+    static Object readFromContent(String text) {
         try {
             JsonSlurper jsonParser = new JsonSlurper()
             def content = jsonParser.parseText(text)
             LOG.info("Read capability file with content: " + content)
-            return content
+            content
         } catch (all) {
-            throw new CifyPluginException("Cannot read capability file content cause: " + all.message, all)
+            LOG.debug(all.message, all)
+            throw new CifyPluginException("Cannot read capability file content cause: " + all.message)
         }
     }
 
@@ -172,7 +170,7 @@ class CapabilityParser {
      *
      * @return map of capabilities
      * */
-    public static LazyMap parseExtraCapabilities(String extraCapabilities) {
+    static LazyMap parseExtraCapabilities(String extraCapabilities) {
 
         LazyMap result
 
@@ -184,7 +182,6 @@ class CapabilityParser {
                 map
             } as LazyMap
         }
-
-        return result
+        result
     }
 }

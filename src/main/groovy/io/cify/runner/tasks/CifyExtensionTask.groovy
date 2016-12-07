@@ -22,16 +22,12 @@ class CifyExtensionTask extends DefaultTask {
     void exec() {
         try {
             LOG.debug(MARKER, this.getName() + " started")
-
             new PluginExtensionManager(project).setupParameters()
-
             LOG.debug(MARKER, this.getName() + " finished")
         } catch (all) {
             LOG.error(MARKER, "Failed to execute " + this.getName(), all)
             throw all
         }
-
     }
-
 }
 
