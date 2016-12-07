@@ -45,8 +45,7 @@ class GherkinFeatureParser {
      * */
     public static boolean hasScenarios(String gherkin, String filePath, List filters) {
         LOG.debug(MARKER, "Check for scenarios matching filters $filters in gherkin ($filePath) \n $gherkin")
-        return getScenarios(gherkin, filePath, filters).size() > 0
-
+        return getScenarios(gherkin, filePath, filters)
     }
 
     /**
