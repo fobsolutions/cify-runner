@@ -14,19 +14,4 @@ class Constants {
      * */
     public static String CIFY_SYSTEM_PROPERTY_PREFIX = "cify."
 
-    /**
-     * Capabilities accepted by selenium
-     * */
-    public static enum Capabilities {
-        CHROME,
-        SAFARI,
-        OPERA,
-        FIREFOX,
-        ANDROID,
-        INTERNETEXPLORER,
-        IPAD,
-        IPHONE,
-        PHANTOMJS,
-        EDGE
-    }
 }

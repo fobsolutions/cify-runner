@@ -199,10 +199,9 @@ class CifyPluginExtension {
             Every capability parameter will be added to DesiredCapability object.
             Every capability will be executed with all the tests provided.
 
-            Every capability MUST HAVE two parameters:
+            Every capability MUST HAVE one parameter:
             1) capability - system will use this to generate default desired capability for capability.
                             See available capabilities on "Usable capabilities" section.
-            2) capabilityId - system will use this to execute tests against capabilities
 
             User can add as many additional parameters as needed (like in 3. capability object)
             and they will be added to DesiredCapability object.
@@ -212,10 +211,12 @@ class CifyPluginExtension {
               "defaults": {
                 "android": {
                   "capability": "android",
+                  "app": "path/to/your/app/DemoApp.apk,
                   "version": "5.1"
                 },
                 "ios": {
                   "capability": "iphone",
+                  "app": "path/to/your/app/DemoApp.ipa,
                   "version": "9.3"
                 },
                 "browser": {
@@ -241,6 +242,7 @@ class CifyPluginExtension {
                 "ios": [
                   {
                     "capability": "ipad",
+                    "app": "path/to/your/app/DemoApp.ipa
                     "version": "9.3.5"
                   }
                 ]

@@ -25,7 +25,8 @@ buildscript {
         }
     }
     dependencies {
-        classpath('io.cify:cify-runner:1.2.2')
+        // Check the latest version above
+        classpath('io.cify:cify-runner:1.2.5')
     }
 }
 
@@ -41,13 +42,13 @@ Cify runner contains 4 tasks:
 - parameters
 - cloneDeviceFarm
 
-Cucumber task collects parameters, device capabilities and feature files, generates task for each feature file, and triggers tests.
+**Cucumber** task collects parameters, device capabilities and feature files, generates task for each feature file, and triggers tests.
 
-Help tasks prints all runner parameters and helping information to console.
+**Help** tasks prints all runner parameters and helping information to console.
 
-Setup parameters task collects all the information from properties file, command line, defaults, devices and holds them as plugin extension
+**Setup** parameters task collects all the information from properties file, command line, defaults, devices and holds them as plugin extension
 
-Clones device farm into devicefarm folder from GitHub
+**cloneDeviceFarm** Clones device farm into devicefarm folder from GitHub
 
 ### Capabilities usage
   
@@ -163,6 +164,14 @@ There are more than different configuration options in Cify Runner.
 
 ----------
 
+### System properties
+
+Users can send system properties to framework and other processes like this:
+
+    gradlew cucumber -Dcify.SOME_PROPERTY=randomValue
+
+This is needed cause runner calls other system processes and they don't share same process nor thread.
+    
 <a name="jenkins" />
 ## How to configure Cify Runner in Jenkins
 

@@ -28,10 +28,10 @@ class GherkinFeatureParser {
      * @param filters list of filters to apply on gherkin string
      * @return boolean
      * */
-    public static boolean hasScenarios(String filePath, List filters) {
+    static boolean hasScenarios(String filePath, List filters) {
         LOG.debug(MARKER, "Check for scenarios matching filters $filters in feature file $filePath")
         String gherkin = readFile(filePath)
-        return gherkin ? hasScenarios(gherkin, filePath, filters) : false
+        gherkin ? hasScenarios(gherkin, filePath, filters) : false
     }
 
     /**
@@ -43,10 +43,9 @@ class GherkinFeatureParser {
      *
      * @return boolean
      * */
-    public static boolean hasScenarios(String gherkin, String filePath, List filters) {
+    static boolean hasScenarios(String gherkin, String filePath, List filters) {
         LOG.debug(MARKER, "Check for scenarios matching filters $filters in gherkin ($filePath) \n $gherkin")
-        return getScenarios(gherkin, filePath, filters).size() > 0
-
+        getScenarios(gherkin, filePath, filters)
     }
 
     /**
@@ -57,15 +56,14 @@ class GherkinFeatureParser {
      * @param filters filters to apply on gherkin string
      * @return the number of scenarios in gherkin
      * */
-    public static List<Object> getScenarios(String gherkin, String filePath, List filters) {
+    static List<Object> getScenarios(String gherkin, String filePath, List filters) {
         List<Object> result = []
         Object json = gherkinToJson(gherkin, filePath, filters)
         if (json && json.elements && json.elements.size() > 0) {
             result = json.elements.get(0)
         }
-        return result
+        result
     }
-
 
     private static String readFile(String filePath) {
         LOG.debug(MARKER, "Read file $filePath")
@@ -101,6 +99,6 @@ class GherkinFeatureParser {
         } catch (all) {
             LOG.warn("Failed to parse gherkin to JSON: $featurePath. \n Cause: $all.message", all)
         }
-        return null
+        null
     }
 }

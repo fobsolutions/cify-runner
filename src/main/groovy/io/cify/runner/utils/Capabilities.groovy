@@ -18,7 +18,7 @@ class Capabilities {
     /**
      * Add capability to every object
      * */
-    public addCapabilitiesToAll(LazyMap extraCapabilities) {
+    void addCapabilitiesToAll(LazyMap extraCapabilities) {
         if (!browser.isEmpty()) {
             browser.putAll(extraCapabilities)
         }
@@ -34,7 +34,7 @@ class Capabilities {
      * Generate unique string from capabilities object
      * */
     @Override
-    public String toString() {
+    String toString() {
         getCapabilityIdentifier(getBrowser()) + "_" + getCapabilityIdentifier(getAndroid()) + "_" + getCapabilityIdentifier(getIos())
     }
 

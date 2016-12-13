@@ -107,7 +107,6 @@ class TaskPoolManager {
                     }
                 }
             }
-
         } catch (all) {
             throw new CifyPluginException("TaskPoolManager: Exception occurred when executing tasks in parallel. Cause: " + all.message)
         }

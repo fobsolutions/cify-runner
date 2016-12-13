@@ -39,8 +39,7 @@ class CucumberArgsBuilder {
                 this.tags << it
             }
         }
-
-        return this
+        this
     }
 
     /**
@@ -63,8 +62,7 @@ class CucumberArgsBuilder {
                 this.plugins << it
             }
         }
-
-        return this
+        this
     }
 
     /**
@@ -80,8 +78,7 @@ class CucumberArgsBuilder {
                 this.glue << it
             }
         }
-
-        return this
+        this
     }
 
     /**
@@ -91,7 +88,7 @@ class CucumberArgsBuilder {
      * */
     CucumberArgsBuilder setDryRun(String dryrun) {
         this.dryRun = dryrun.toBoolean()
-        return this
+        this
     }
 
     /**
@@ -101,7 +98,7 @@ class CucumberArgsBuilder {
      * */
     CucumberArgsBuilder setStrict(String strict) {
         this.strict = strict.toBoolean()
-        return this
+        this
     }
 
     /**
@@ -111,7 +108,7 @@ class CucumberArgsBuilder {
      * */
     CucumberArgsBuilder setMonochrome(String monochrome) {
         this.monochrome = monochrome.toBoolean()
-        return this
+        this
     }
 
     /**
@@ -123,7 +120,7 @@ class CucumberArgsBuilder {
         if (featureDir) {
             this.featureDir = featureDir
         }
-        return this
+        this
     }
 
     /**
@@ -161,7 +158,6 @@ class CucumberArgsBuilder {
         if (strict) {
             args << STRICT_OPTION
         }
-
-        return args?.flatten()
+        args?.flatten()
     }
 }
