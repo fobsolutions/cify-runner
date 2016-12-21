@@ -74,6 +74,10 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         fileWithMode = testProjectDir.newFile("fileWithMode.json")
     }
 
+    void testDefaultRunId() {
+        assert extension.runId == defaultExtension.runId
+    }
+
     void testGetDefaultFeatureDir() {
         assert extension.featureDirs == defaultExtension.featureDirs
     }
