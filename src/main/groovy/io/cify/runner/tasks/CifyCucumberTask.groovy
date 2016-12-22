@@ -44,7 +44,8 @@ class CifyCucumberTask extends JavaExec {
                     'capabilities': StringEscapeUtils.escapeJava(JsonOutput.toJson(taskParams['capabilities'])),
                     'videoRecord' : taskParams['videoRecord'],
                     'videoDir'    : taskParams['videoDir'],
-                    'credentials' : taskParams['credentials']
+                    'credentials' : taskParams['credentials'],
+                    'runId'       : taskParams['runId']
             ]
 
             System.properties.each { k, v ->

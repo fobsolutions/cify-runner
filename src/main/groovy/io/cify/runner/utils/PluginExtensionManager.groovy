@@ -36,6 +36,7 @@ class PluginExtensionManager {
 
         setEnvProperties()
 
+        setRunId()
         setThreads()
         setGlue()
         setTags()
@@ -140,6 +141,13 @@ class PluginExtensionManager {
             LOG.debug(MARKER, "Using default value: $paramName : $content")
         }
         content
+    }
+
+    /**
+     * Set test run id
+     */
+    private void setRunId(){
+        project.cify.runId = getValue('runId')
     }
 
     /**

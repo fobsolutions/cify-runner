@@ -28,6 +28,11 @@ class CifyPluginExtension {
     String cucumberPlugins = "pretty,json:build/cify/reports/json/"
 
     /**
+     * Test run id. Default is empty string
+     */
+    String runId = ""
+
+    /**
      * Execute a test dry run without actually executing tests. Defaults to false
      */
     String dryRun = "false"
