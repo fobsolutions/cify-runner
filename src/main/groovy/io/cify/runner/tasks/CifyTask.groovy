@@ -33,7 +33,10 @@ class CifyTask extends DefaultTask {
             String videoDir = project.cify.videoDir
             String credentials = project.cify.credentials
             int repeatCount = project.cify.repeat as int
-            String runId = project.cify.runId
+            String runId = project.reporter.runId
+            String projectName = project.reporter.projectName
+            String suiteName = project.reporter.suiteName
+            String accessKey = project.reporter.accessKey
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -52,7 +55,10 @@ class CifyTask extends DefaultTask {
                         params.put('videoRecord', videoRecord)
                         params.put('videoDir', videoDir)
                         params.put('credentials', credentials)
-                        params.put('runId',runId)
+                        params.put('runId', runId)
+                        params.put('projectName', projectName)
+                        params.put('suiteName', suiteName)
+                        params.put('accessKey', accessKey)
                         taskPoolManager.addTask(taskName, CifyCucumberTask, params)
                     }
                 }
