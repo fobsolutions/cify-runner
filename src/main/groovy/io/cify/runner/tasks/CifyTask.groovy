@@ -52,6 +52,7 @@ class CifyTask extends DefaultTask {
                         params.put('taskName', taskName)
                         params.put('featurePath', featurePath)
                         params.put('capabilities', capabilities)
+                        params.put('capabilitiesId', capabilities.toString())
                         params.put('videoRecord', videoRecord)
                         params.put('videoDir', videoDir)
                         params.put('credentials', credentials)
