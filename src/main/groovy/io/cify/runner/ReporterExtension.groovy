@@ -13,5 +13,4 @@ class ReporterExtension {
     String accessKey
     String baseURL
     String reporterPlugin
-    boolean isPluginConnected
 }
