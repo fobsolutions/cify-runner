@@ -68,7 +68,7 @@ class CucumberArgsBuilder {
                 this.plugins << it
             }
 
-            if (reporterExtension.isPluginConnected) {
+            if (reporterExtension.accessKey && reporterExtension.projectName) {
                 this.plugins << PLUGIN_OPTION
                 this.plugins << Constants.REPORTER_PLUGIN_PATH
             }

@@ -58,8 +58,6 @@ class PluginExtensionManager {
 
         setVideoRecord()
         setVideoDir()
-
-        setReporter()
     }
 
     /**
@@ -363,23 +361,6 @@ class PluginExtensionManager {
      * */
     private void setVideoDir() {
         project.cify.videoDir = getValue('videoDir')
-    }
-
-    /**
-     * Sets up reporter
-     * Checks if reporter is connected
-     */
-    private void setReporter() {
-
-        boolean isReporterConnected
-        try {
-            Class.forName(project.reporter.reporterPlugin as String)
-            isReporterConnected = true
-        } catch (ignored) {
-            isReporterConnected = false
-        }
-
-        project.reporter.isPluginConnected = isReporterConnected
     }
 
     /**
