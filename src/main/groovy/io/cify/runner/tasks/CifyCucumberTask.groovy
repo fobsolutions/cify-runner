@@ -73,6 +73,7 @@ class CifyCucumberTask extends JavaExec {
     /**
      * Get cucumber arguments
      * @param cify extension class
+     * @param reporter extension class
      * @param taskName task name
      * @param featurePath path for feature files
      * @return List of arguments
