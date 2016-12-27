@@ -1,11 +1,13 @@
 package io.cify.runner.utils
 
+import io.cify.runner.ReporterExtension
+
 class CucumberArgsBuilderTest extends GroovyTestCase {
 
     CucumberArgsBuilder cucumberArgsBuilder
 
     void setUp() {
-        cucumberArgsBuilder = new CucumberArgsBuilder("testTask")
+        cucumberArgsBuilder = new CucumberArgsBuilder("testTask", new ReporterExtension())
     }
 
     void testWithoutConfigurationBuildReturnsEmpty() {

@@ -6,6 +6,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 
+import static java.util.UUID.randomUUID
+
 /**
  * Cify plugin.
  *
@@ -17,6 +19,12 @@ class CifyPlugin implements Plugin<Project> {
     void apply(Project project) {
 
         project.extensions.create("cify", CifyPluginExtension)
+
+        project.extensions.create("reporter", ReporterExtension).with {
+            runId = (System.currentTimeMillis() + "-" + randomUUID()) as String
+            baseURL = Constants.REPORTER_BASE_URL
+            reporterPlugin = Constants.REPORTER_PLUGIN_PATH
+        }
 
         project.task('parameters', type: CifyExtensionTask) {
             group = 'Cify'
