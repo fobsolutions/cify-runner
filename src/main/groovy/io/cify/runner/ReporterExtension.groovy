@@ -13,5 +13,7 @@ class ReporterExtension {
     String accessKey
     String secretKey
     String authService
+    String serviceStage
+    String serviceRegion
     String reporterPlugin
 }
