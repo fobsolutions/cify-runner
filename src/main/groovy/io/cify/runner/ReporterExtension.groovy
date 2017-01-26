@@ -11,6 +11,7 @@ class ReporterExtension {
     String runId
     String suiteName
     String accessKey
-    String baseURL
+    String secretKey
+    String authService
     String reporterPlugin
 }

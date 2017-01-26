@@ -37,6 +37,8 @@ class CifyTask extends DefaultTask {
             String projectName = project.reporter.projectName
             String suiteName = project.reporter.suiteName
             String accessKey = project.reporter.accessKey
+            String secretKey = project.reporter.secretKey
+            String authService = project.reporter.authService
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -60,6 +62,8 @@ class CifyTask extends DefaultTask {
                         params.put('projectName', projectName)
                         params.put('suiteName', suiteName)
                         params.put('accessKey', accessKey)
+                        params.put('secretKey', secretKey)
+                        params.put('authService', authService)
                         taskPoolManager.addTask(taskName, CifyCucumberTask, params)
                     }
                 }

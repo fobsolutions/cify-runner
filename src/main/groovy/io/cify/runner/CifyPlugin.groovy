@@ -22,7 +22,6 @@ class CifyPlugin implements Plugin<Project> {
 
         project.extensions.create("reporter", ReporterExtension).with {
             runId = (System.currentTimeMillis() + "-" + randomUUID()) as String
-            baseURL = Constants.REPORTER_BASE_URL
             reporterPlugin = Constants.REPORTER_PLUGIN_PATH
         }
 
