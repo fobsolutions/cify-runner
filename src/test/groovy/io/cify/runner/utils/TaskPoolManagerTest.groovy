@@ -64,7 +64,7 @@ class TaskPoolManagerTest extends GroovyTestCase {
     void testRunCount() {
         addTestTasks(10)
         taskPoolManager.runTasksInParallel(1)
-        assert TestTask.count == 10
+        assert TestTask.count == taskPoolManager.tasksPool.size()
     }
 
     void testEmptyTaskPool() {

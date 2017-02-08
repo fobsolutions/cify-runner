@@ -16,4 +16,5 @@ class ReporterExtension {
     String serviceStage
     String serviceRegion
     String reporterPlugin
+    String suiteFinished
 }

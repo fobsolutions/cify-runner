@@ -41,6 +41,7 @@ class CifyTask extends DefaultTask {
             String authService = project.reporter.authService
             String serviceStage = project.reporter.serviceStage
             String serviceRegion = project.reporter.serviceRegion
+            String suiteFinished = project.reporter.suiteFinished
 
             features.each { String filePath ->
                 File featureFile = new File(filePath)
@@ -68,6 +69,7 @@ class CifyTask extends DefaultTask {
                         params.put('authService', authService)
                         params.put('serviceStage', serviceStage)
                         params.put('serviceRegion', serviceRegion)
+                        params.put('suiteFinished', suiteFinished)
                         taskPoolManager.addTask(taskName, CifyCucumberTask, params)
                     }
                 }
