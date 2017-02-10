@@ -141,6 +141,10 @@ class TaskPoolManager {
         }
     }
 
+    /**
+     * Returns true if all Reporter parameters are provided
+     * @return
+     */
     private boolean isReporting() {
         ReporterExtension reporterExtension = project.reporter as ReporterExtension
         return (reporterExtension.accessKey && reporterExtension.secretKey && reporterExtension.projectName
