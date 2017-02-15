@@ -59,10 +59,10 @@ class CucumberArgsBuilder {
             pluginsList.each {
                 this.plugins << PLUGIN_OPTION
 
-                if (it.toString().startsWith("json:") || it.toString().contains("CifyJSONFormatter")) {
-                    if (!it.toString().endsWith(".json")) {
-                        it = it + taskName + ".json"
-                    }
+                if (it.toString().startsWith("json:") || it.toString().contains("CifyJSONFormatter") && !it.toString().endsWith(".json")) {
+                    it = it + taskName + ".json"
+                } else if (it.toString().startsWith("junit:") && !it.toString().endsWith(".xml")) {
+                    it = it + taskName + ".xml"
                 }
 
                 this.plugins << it
