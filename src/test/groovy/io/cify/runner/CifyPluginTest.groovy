@@ -33,6 +33,5 @@ class CifyPluginTest extends GroovyTestCase {
     void testReporterInit() {
         assert !project.reporter.runId.isEmpty()
         assert project.reporter.reporterPlugin == Constants.REPORTER_PLUGIN_PATH
-        assert project.reporter.baseURL == Constants.REPORTER_BASE_URL
     }
 }

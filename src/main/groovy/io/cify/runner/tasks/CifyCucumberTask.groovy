@@ -51,7 +51,12 @@ class CifyCucumberTask extends JavaExec {
                     'projectName'   : taskParams['projectName'],
                     'suiteName'     : taskParams['suiteName'],
                     'accessKey'     : taskParams['accessKey'],
-                    'capabilitiesId': taskParams['capabilitiesId']
+                    'secretKey'     : taskParams['secretKey'],
+                    'authService'   : taskParams['authService'],
+                    'serviceRegion' : taskParams['serviceRegion'],
+                    'serviceStage'  : taskParams['serviceStage'],
+                    'capabilitiesId': taskParams['capabilitiesId'],
+                    'suiteFinished': taskParams['suiteFinished']
             ]
 
             System.properties.each { k, v ->
