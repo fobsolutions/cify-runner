@@ -60,7 +60,7 @@ class GherkinFeatureParser {
         List<Object> result = []
         Object json = gherkinToJson(gherkin, filePath, filters)
         if (json && json.elements && json.elements.size() > 0) {
-            result = json.elements.get(0)
+            result = GherkinFeatureFilter.filterScenarios(json, filters).elements
         }
         result
     }
