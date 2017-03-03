@@ -4,7 +4,6 @@ import gherkin.formatter.FilterFormatter
 import gherkin.formatter.JSONFormatter
 import gherkin.parser.Parser
 import gherkin.util.FixJava
-import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
@@ -61,71 +60,63 @@ class GherkinFeatureParser {
         List<Object> result = []
         Object json = gherkinToJson(gherkin, filePath, filters)
         if (json && json.elements && json.elements.size() > 0) {
-            result = filterScenarios(json,filters).elements
+            result = filterScenarios(json, filters).elements
         }
         result
     }
 
-    private static Object filterScenarios(Object json, List filters){
-        //println('filterScenarios started')
+    private static Object filterScenarios(Object json, List filters) {
         List negative = []
         List positive = []
+        List scenariosToRemove = []
         int positiveFilterSize = 0
         boolean exclude = false
         def obj = json.get(0)
 
-        if(! filters) {
+        if (!filters) {
             return obj
         }
 
-        // fill filter lists
-        filters[0].tokenize(',').each{
-            //println('filter element: '+ it)
-            if(it.toString().trim().startsWith('~@') ) {
-                negative.add(it.trim().replace('~',''))}
-            if(it.toString().trim().startsWith('@') ) {
-                positive.add(it.trim())}
+        filters[0].tokenize(',').each {
+            if (it.toString().trim().startsWith('~@')) {
+                negative.add(it.trim().replace('~', ''))
+            }
+            if (it.toString().trim().startsWith('@')) {
+                positive.add(it.trim())
+            }
         }
 
-        if(positive){
+        if (positive) {
             positiveFilterSize = positive.size()
         }
-        //println('positive filter size: '+ positiveFilterSize)
+        negative.each {
+            if (positive.contains(it)) {
+                positive.remove(it)
+            }
+        }
 
-            // check if negative and positive filters have same values
-            negative.each{
-                if(positive.contains(it)){
-                    positive.remove(it)
+        obj.elements.findAll { it.keyword == 'Scenario' }.eachWithIndex { item, index ->
+            int matched = 0
+            boolean include = false
+            exclude = false
+
+            json.tags.get(0).each {
+                if (!exclude) {
+                    if (positive.contains(it.name)) {
+                        matched++
+                        include = true
+                    }
+                    if (negative.contains(it.name)) {
+                        matched--
+                        exclude = true
+                        scenariosToRemove.add(index)
+                    }
                 }
             }
 
-        //println('scenarios qty: '+ obj.elements.findAll{ it.keyword == 'Scenario' }.size())
-
-            // iterate all scenarios
-            List scenariosToRemove = []
-            obj.elements.findAll{ it.keyword == 'Scenario' }.eachWithIndex { item,index ->
-                int matched = 0
-                int rootTagsSize = 0
-                int tagsSize = 0
-                boolean include = false
-                exclude = false
-
-
-
-                if(json.tags && json.tags[0]){
-                    rootTagsSize = json.tags[0].size()
-                }
-
-                if(item.tags){
-                    tagsSize = item.tags.size()
-                }
-
-                //println('index:'+index+ ' name: '+ item.name + ' tags: '+ item.tags + ' size:'+ tagsSize)
-                //println('root tag size: ' + rootTagsSize + ' root tag: ' + json.tags[0])
-
-                json.tags[0].each {
-                    if(!exclude) {
-                        //println('root tag: ' + it.name)
+            if (!exclude) {
+                item.tags.each {
+                    if (!exclude) {
                         if (positive.contains(it.name)) {
                             matched++
                             include = true
@@ -137,57 +128,28 @@ class GherkinFeatureParser {
                         }
                     }
                 }
-
-                if(!exclude) {
-                    item.tags.each {
-                        if(!exclude) {
-                            //println('scenario tag: ' + it.name)
-                            if (positive.contains(it.name)) {
-                                matched++
-                                include = true
-                            }
-                            if (negative.contains(it.name)) {
-                                matched--
-                                exclude = true
-                                scenariosToRemove.add(index)
-                            }
-                        }
-                    }
-                }
-                //println('positive filter: '+ positive)
-                //println('positive filter size: '+ positiveFilterSize)
-                //println('rootTagsSize + tagsSize: '+ (rootTagsSize + tagsSize))
-                //println('scenario tags matched:'+matched)
-                if( !exclude && positiveFilterSize > 0 && positiveFilterSize > matched){
-                    exclude = true
-                    //println('scenario index to remove: '+ index)
-                    scenariosToRemove.add(index)
-                }
-
-                // remove scenario which didn't matched positive filter
-                if(!exclude && positiveFilterSize > 0 && !include){
-                    exclude = true
-                    scenariosToRemove.add(index)
-                }
-
-            }
-            //println('old feature object scenarios qty:'+ obj.elements.size)
-            //println('scenarios to remove: '+ scenariosToRemove)
-
-            if(scenariosToRemove && scenariosToRemove.size() > 0) {
-                int removed = 0
-                scenariosToRemove.each {
-                    //println('this will be removed: ' + obj.elements[it - removed])
-                    obj.elements.remove(obj.elements[it - removed])
-                    removed++
-                }
             }
 
-            //println('new feature object scenarios qty:'+ obj.elements.size)
-            ////println('new feature object pretty: ' + new JsonBuilder(obj).toPrettyString())
-            //println('new obj' + obj)
+            if (!exclude && positiveFilterSize > 0 && positiveFilterSize > matched) {
+                exclude = true
+                scenariosToRemove.add(index)
+            }
 
-            return obj
+            if (!exclude && positiveFilterSize > 0 && !include) {
+                exclude = true
+                scenariosToRemove.add(index)
+            }
+
+        }
+
+        if (scenariosToRemove && scenariosToRemove.size() > 0) {
+            int removed = 0
+            scenariosToRemove.each {
+                obj.elements.remove(obj.elements[it - removed])
+                removed++
+            }
+        }
+        return obj
     }
 
     private static String readFile(String filePath) {
