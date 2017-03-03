@@ -60,96 +60,9 @@ class GherkinFeatureParser {
         List<Object> result = []
         Object json = gherkinToJson(gherkin, filePath, filters)
         if (json && json.elements && json.elements.size() > 0) {
-            result = filterScenarios(json, filters).elements
+            result = GherkinFeatureFilter.filterScenarios(json, filters).elements
         }
         result
-    }
-
-    private static Object filterScenarios(Object json, List filters) {
-        List negative = []
-        List positive = []
-        List scenariosToRemove = []
-        int positiveFilterSize = 0
-        boolean exclude = false
-        def obj = json.get(0)
-
-        if (!filters) {
-            return obj
-        }
-
-        filters[0].tokenize(',').each {
-            if (it.toString().trim().startsWith('~@')) {
-                negative.add(it.trim().replace('~', ''))
-            }
-            if (it.toString().trim().startsWith('@')) {
-                positive.add(it.trim())
-            }
-        }
-
-        if (positive) {
-            positiveFilterSize = positive.size()
-        }
-        negative.each {
-            if (positive.contains(it)) {
-                positive.remove(it)
-            }
-        }
-
-        obj.elements.findAll { it.keyword == 'Scenario' }.eachWithIndex { item, index ->
-            int matched = 0
-            boolean include = false
-            exclude = false
-
-            json.tags.get(0).each {
-                if (!exclude) {
-                    if (positive.contains(it.name)) {
-                        matched++
-                        include = true
-                    }
-                    if (negative.contains(it.name)) {
-                        matched--
-                        exclude = true
-                        scenariosToRemove.add(index)
-                    }
-                }
-            }
-
-            if (!exclude) {
-                item.tags.each {
-                    if (!exclude) {
-                        if (positive.contains(it.name)) {
-                            matched++
-                            include = true
-                        }
-                        if (negative.contains(it.name)) {
-                            matched--
-                            exclude = true
-                            scenariosToRemove.add(index)
-                        }
-                    }
-                }
-            }
-
-            if (!exclude && positiveFilterSize > 0 && positiveFilterSize > matched) {
-                exclude = true
-                scenariosToRemove.add(index)
-            }
-
-            if (!exclude && positiveFilterSize > 0 && !include) {
-                exclude = true
-                scenariosToRemove.add(index)
-            }
-
-        }
-
-        if (scenariosToRemove && scenariosToRemove.size() > 0) {
-            int removed = 0
-            scenariosToRemove.each {
-                obj.elements.remove(obj.elements[it - removed])
-                removed++
-            }
-        }
-        return obj
     }
 
     private static String readFile(String filePath) {
