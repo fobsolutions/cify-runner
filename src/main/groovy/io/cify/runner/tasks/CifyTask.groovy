@@ -37,7 +37,6 @@ class CifyTask extends DefaultTask {
             String projectName = project.reporter.projectName
             String suiteName = project.reporter.suiteName
             String accessKey = project.reporter.accessKey
-            String secretKey = project.reporter.secretKey
             String authService = project.reporter.authService
             String serviceStage = project.reporter.serviceStage
             String serviceRegion = project.reporter.serviceRegion
@@ -65,7 +64,6 @@ class CifyTask extends DefaultTask {
                         params.put('projectName', projectName)
                         params.put('suiteName', suiteName)
                         params.put('accessKey', accessKey)
-                        params.put('secretKey', secretKey)
                         params.put('authService', authService)
                         params.put('serviceStage', serviceStage)
                         params.put('serviceRegion', serviceRegion)
