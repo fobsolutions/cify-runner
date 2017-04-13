@@ -68,7 +68,7 @@ class CucumberArgsBuilder {
                 this.plugins << it
             }
 
-            if (reporterExtension.accessKey && reporterExtension.secretKey && reporterExtension.projectName
+            if (reporterExtension.accessKey && reporterExtension.projectName
                     && reporterExtension.suiteName && reporterExtension.authService
                     && reporterExtension.serviceStage && reporterExtension.serviceRegion) {
                 this.plugins << PLUGIN_OPTION
