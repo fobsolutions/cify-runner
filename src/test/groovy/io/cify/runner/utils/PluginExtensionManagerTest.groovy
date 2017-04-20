@@ -322,6 +322,38 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         assert project.cify.videoRecord == "true"
     }
 
+    void testAuthService() {
+        project.ext.set("authService", "test.com")
+        manager.setupParameters()
+        assert project.reporter.authService == "test.com"
+    }
+
+    void testProjectName() {
+        project.ext.set("projectName", "project-2")
+        manager.setupParameters()
+        assert project.reporter.projectName == "project-2"
+    }
+
+    void testSuiteName() {
+        project.ext.set("suiteName", "test-suite-2")
+        manager.setupParameters()
+        assert project.reporter.suiteName == "test-suite-2"
+    }
+
+    void testAccessKey() {
+        project.ext.set("accessKey", "1q2w3e4r5t6y7u")
+        manager.setupParameters()
+        assert project.reporter.accessKey == "1q2w3e4r5t6y7u"
+    }
+
+    void testDefaultReporterParameters() {
+        manager.setupParameters()
+        assert project.reporter.suiteName == null
+        assert project.reporter.projectName == null
+        assert project.reporter.accessKey == null
+        assert project.reporter.authService == "auth.cify.io"
+    }
+
     void testRecordWithInvalid() {
         project.ext.set("videoRecord", "truu")
         shouldFail {

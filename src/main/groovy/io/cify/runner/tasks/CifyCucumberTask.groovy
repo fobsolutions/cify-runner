@@ -52,8 +52,6 @@ class CifyCucumberTask extends JavaExec {
                     'suiteName'     : taskParams['suiteName'],
                     'accessKey'     : taskParams['accessKey'],
                     'authService'   : taskParams['authService'],
-                    'serviceRegion' : taskParams['serviceRegion'],
-                    'serviceStage'  : taskParams['serviceStage'],
                     'capabilitiesId': taskParams['capabilitiesId'],
                     'suiteFinished': taskParams['suiteFinished']
             ]

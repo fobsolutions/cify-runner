@@ -148,7 +148,6 @@ class TaskPoolManager {
     private boolean isReporting() {
         ReporterExtension reporterExtension = project.reporter as ReporterExtension
         return (reporterExtension.accessKey && reporterExtension.projectName
-                && reporterExtension.suiteName && reporterExtension.authService
-                && reporterExtension.serviceStage && reporterExtension.serviceRegion)
+                && reporterExtension.suiteName && reporterExtension.authService)
     }
 }
