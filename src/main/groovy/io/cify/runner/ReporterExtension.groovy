@@ -11,9 +11,7 @@ class ReporterExtension {
     String runId
     String suiteName
     String accessKey
-    String authService
-    String serviceStage
-    String serviceRegion
+    String authService = "auth.cify.io"
     String reporterPlugin
     String suiteFinished
 }

@@ -69,8 +69,7 @@ class CucumberArgsBuilder {
             }
 
             if (reporterExtension.accessKey && reporterExtension.projectName
-                    && reporterExtension.suiteName && reporterExtension.authService
-                    && reporterExtension.serviceStage && reporterExtension.serviceRegion) {
+                    && reporterExtension.suiteName && reporterExtension.authService) {
                 this.plugins << PLUGIN_OPTION
                 this.plugins << Constants.REPORTER_PLUGIN_PATH
             }

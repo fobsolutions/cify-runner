@@ -58,6 +58,11 @@ class PluginExtensionManager {
 
         setVideoRecord()
         setVideoDir()
+
+        setAuthService()
+        setProjectName()
+        setSuiteName()
+        setAccessKey()
     }
 
     /**
@@ -137,6 +142,7 @@ class PluginExtensionManager {
             LOG.debug(MARKER, "From env properties: $paramName : $content")
         } else {
             content = project.extensions.getByName('cify').getProperties().get(paramName)
+            if(content == null) { content = project.extensions.getByName('reporter').getProperties().get(paramName) }
             LOG.debug(MARKER, "Using default value: $paramName : $content")
         }
         content
@@ -361,6 +367,34 @@ class PluginExtensionManager {
      * */
     private void setVideoDir() {
         project.cify.videoDir = getValue('videoDir')
+    }
+
+    /**
+     * Sets reporter authentication service name to current run
+     * */
+    private void setAuthService() {
+        project.reporter.authService = getValue('authService')
+    }
+
+    /**
+     * Sets reporter project name to current run
+     * */
+    private void setProjectName() {
+        project.reporter.projectName = getValue('projectName')
+    }
+
+    /**
+     * Sets reporter testsuite name to current run
+     * */
+    private void setSuiteName() {
+        project.reporter.suiteName = getValue('suiteName')
+    }
+
+    /**
+     * Sets reporter accessKey to current run
+     * */
+    private void setAccessKey() {
+        project.reporter.accessKey = getValue('accessKey')
     }
 
     /**
