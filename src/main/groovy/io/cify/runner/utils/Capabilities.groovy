@@ -35,13 +35,19 @@ class Capabilities {
      * */
     @Override
     String toString() {
-        getCapabilityIdentifier(getBrowser()) + "_" + getCapabilityIdentifier(getAndroid()) + "_" + getCapabilityIdentifier(getIos())
+        String browserCapsId = getCapabilityIdentifier(getBrowser()) ?: ""
+        String androidCapsId = getCapabilityIdentifier(getAndroid()) ?: ""
+        String iosCapsId = getCapabilityIdentifier(getIos()) ?: ""
+
+        return browserCapsId + androidCapsId + iosCapsId
     }
 
     /**
      * Gets capability identifier from LazyMap
      * */
     private static String getCapabilityIdentifier(LazyMap capability) {
-        capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
+        if(capability) {
+            "_" + capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
+        }
     }
 }

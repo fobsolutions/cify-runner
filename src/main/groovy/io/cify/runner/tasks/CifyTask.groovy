@@ -48,7 +48,11 @@ class CifyTask extends DefaultTask {
                 capabilitiesSet.each { Capabilities capabilities ->
 
                     for (int i = 0; i < repeatCount; i++) {
-                        String taskName = featureName + "_" + capabilities.toString() + "_" + i
+                        String taskName = featureName + capabilities.toString()
+
+                        if(repeatCount > 1){
+                            taskName += "_" + (i + 1).intValue()
+                        }
 
                         Map params = [:]
                         params.put('taskName', taskName)
