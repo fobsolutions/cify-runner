@@ -35,9 +35,13 @@ class Capabilities {
      * */
     @Override
     String toString() {
-        String browserCapsId = getCapabilityIdentifier(getBrowser()) ?: ""
-        String androidCapsId = getCapabilityIdentifier(getAndroid()) ?: ""
-        String iosCapsId = getCapabilityIdentifier(getIos()) ?: ""
+        String browserCapsId = getCapabilityIdentifier(getBrowser())
+        String androidCapsId = getCapabilityIdentifier(getAndroid())
+        String iosCapsId = getCapabilityIdentifier(getIos())
+
+        browserCapsId = browserCapsId ? "_" + browserCapsId : ""
+        androidCapsId = androidCapsId ? "_" + androidCapsId : ""
+        iosCapsId = iosCapsId ? "_" + iosCapsId : ""
 
         return browserCapsId + androidCapsId + iosCapsId
     }
@@ -47,7 +51,7 @@ class Capabilities {
      * */
     private static String getCapabilityIdentifier(LazyMap capability) {
         if(capability) {
-            "_" + capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
+            capability.containsKey(CAPABILITY_ID) ? capability.get(CAPABILITY_ID) : capability.hashCode()
         }
     }
 }
