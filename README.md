@@ -198,4 +198,4 @@ Users can use default Cucumber HTML report.
 
 Cucumber reports plugin can be found in: <a href="https://github.com/jenkinsci/cucumber-reports-plugin">Cucumber reports plugin</a>
 
-[![Analytics](https://ga-beacon.appspot.com/UA-109814182-1/cify-pages)](https://github.com/fobsolutions/cify-pages)
+[![Analytics](https://ga-beacon.appspot.com/UA-109814182-1/cify-runner)](https://github.com/fobsolutions/cify-runner)
