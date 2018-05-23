@@ -31,7 +31,7 @@ class PluginExtensionManager {
     /**
      * Setup method for creating and updating extension file
      */
-    public void setupParameters() {
+    void setupParameters() {
         LOG.debug(MARKER, "Setup parameters")
 
         setEnvProperties()
@@ -40,6 +40,7 @@ class PluginExtensionManager {
         setGlue()
         setTags()
         setPlugins()
+        addPlugins()
         setDryRun()
         setStrict()
         setMonochrome()
@@ -119,7 +120,7 @@ class PluginExtensionManager {
      * */
     static InputStream readPropertiesFromFile(File propertiesFile) {
         try {
-            new ByteArrayInputStream(propertiesFile.getBytes());
+            new ByteArrayInputStream(propertiesFile.getBytes())
         } catch (all) {
             throw new CifyPluginException("Cannot read input stream from env properties file $propertiesFile", all)
         }
@@ -142,7 +143,9 @@ class PluginExtensionManager {
             LOG.debug(MARKER, "From env properties: $paramName : $content")
         } else {
             content = project.extensions.getByName('cify').getProperties().get(paramName)
-            if(content == null) { content = project.extensions.getByName('reporter').getProperties().get(paramName) }
+            if (content == null) {
+                content = project.extensions.getByName('reporter').getProperties().get(paramName)
+            }
             LOG.debug(MARKER, "Using default value: $paramName : $content")
         }
         content
@@ -186,6 +189,17 @@ class PluginExtensionManager {
      */
     private void setPlugins() {
         project.cify.cucumberPlugins = getValue('cucumberPlugins')
+    }
+
+    /**
+     * Add plugins, formatters
+     */
+    private void addPlugins() {
+        String plugins = getValue('addPlugins')
+
+        if (plugins) {
+            project.cify.cucumberPlugins = project.cify.cucumberPlugins + "," + plugins
+        }
     }
 
     /**
@@ -261,7 +275,7 @@ class PluginExtensionManager {
      * Sets remote url
      * */
     private void setFarmUrl() {
-        UrlValidator urlValidator = new UrlValidator();
+        UrlValidator urlValidator = new UrlValidator()
         String value = getValue("farmUrl")
         if (urlValidator.isValid(value) || value.isEmpty()) {
             project.cify.farmUrl = value
