@@ -63,6 +63,8 @@ class CucumberArgsBuilder {
                     it = it + taskName + ".json"
                 } else if (it.toString().startsWith("junit:") && !it.toString().endsWith(".xml")) {
                     it = it + taskName + ".xml"
+                } else if (it.toString() == "cify") {
+                    it = "io.cify.plugins.CifyReporterPlugin:build/cify/reports/cify/" +  taskName + ".json"
                 }
 
                 this.plugins << it
