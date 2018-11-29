@@ -18,8 +18,10 @@ class CapabilityParser {
     private static final String ANDROID = "android"
     private static final String IOS = "ios"
     private static final String BROWSER = "browser"
+    private static final String CUSTOM = "custom"
     private static final String SET = "set"
     private static final String DEFAULTS = "defaults"
+    private static final String CAPABILITIES = "capabilities"
 
     /**
      * Gets full capabilities list from file or default list
@@ -28,6 +30,7 @@ class CapabilityParser {
      * */
     static List generateCapabilitiesList(String capabilitiesFilePath, String extraCapabilities, String farmUrl, String capabilitiesFromCmd) {
 
+        List capabilitiesVariations = []
         LazyMap capabilitiesContent
         if (!capabilitiesFromCmd.isEmpty()) {
             capabilitiesContent = new JsonSlurper().parseText(capabilitiesFromCmd) as LazyMap
@@ -35,14 +38,19 @@ class CapabilityParser {
             capabilitiesContent = getCapabilitiesFromFile(capabilitiesFilePath.toString())
         }
 
-        List capabilities = getCapabilitiesVariations(capabilitiesContent)
+        if(capabilitiesContent.get(SET)){
+            capabilitiesVariations = getCapabilitiesVariations(capabilitiesContent)
+        } else if(capabilitiesContent.get(CAPABILITIES)){
+            addCapabilities(capabilitiesVariations, capabilitiesContent)
+        }
+
         LazyMap extraCapabilitiesMap = parseExtraCapabilities(extraCapabilities.toString())
 
         if (!farmUrl.isEmpty()) {
             extraCapabilitiesMap.put("remote", farmUrl)
         }
 
-        List capabilitiesList = getCapabilitiesList(capabilities, extraCapabilitiesMap)
+        List capabilitiesList = getCapabilitiesList(capabilitiesVariations, extraCapabilitiesMap)
 
         LOG.debug("Capabilities list is: " + capabilitiesList.toArray())
         capabilitiesList
@@ -58,6 +66,7 @@ class CapabilityParser {
         List iOSCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, IOS)
         List browserCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, BROWSER)
         List androidCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, ANDROID)
+        List customCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, CUSTOM)
 
         List capabilitiesSet = []
 
@@ -67,11 +76,15 @@ class CapabilityParser {
                 LazyMap android = androidCapabilitiesList.get(a) as LazyMap
                 for (int b = 0; b < browserCapabilitiesList.size(); b++) {
                     LazyMap browser = browserCapabilitiesList.get(b) as LazyMap
-                    Capabilities capability = new Capabilities()
-                    capability.setIos(ios)
-                    capability.setAndroid(android)
-                    capability.setBrowser(browser)
-                    capabilitiesSet.add(capability)
+                    for (int c = 0; c < customCapabilitiesList.size(); c++) {
+                        LazyMap custom = customCapabilitiesList.get(c) as LazyMap
+                        Capabilities capability = new Capabilities()
+                        capability.getIos().add(ios)
+                        capability.getAndroid().add(android)
+                        capability.getBrowser().add(browser)
+                        capability.getCustom().add(custom)
+                        capabilitiesSet.add(capability)
+                    }
                 }
             }
         }
@@ -183,5 +196,20 @@ class CapabilityParser {
             } as LazyMap
         }
         result
+    }
+
+    /**
+     * Adds capabilities content to capabilities variations
+     *
+     * @param capabilitiesVariations
+     * @param capabilitiesContent
+     */
+    private static void addCapabilities(List capabilitiesVariations, LazyMap capabilitiesContent){
+        try{
+            capabilitiesVariations.add(capabilitiesContent.get(CAPABILITIES) as Capabilities)
+        }catch (all){
+            LOG.debug(all.message, all)
+            throw new CifyPluginException("Could not read capabilities: " + all.message)
+        }
     }
 }

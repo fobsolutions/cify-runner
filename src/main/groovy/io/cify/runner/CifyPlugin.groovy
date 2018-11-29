@@ -20,11 +20,6 @@ class CifyPlugin implements Plugin<Project> {
 
         project.extensions.create("cify", CifyPluginExtension)
 
-        project.extensions.create("reporter", ReporterExtension).with {
-            runId = (System.currentTimeMillis() + "-" + randomUUID()) as String
-            reporterPlugin = Constants.REPORTER_PLUGIN_PATH
-        }
-
         project.task('parameters', type: CifyExtensionTask) {
             group = 'Cify'
             description = 'Reads and validates parameters, and saves them to a configuration file'
@@ -44,10 +39,5 @@ class CifyPlugin implements Plugin<Project> {
             }
         }
 
-        project.task('cloneDeviceFarm', type: Exec) {
-            group = 'Cify'
-            description 'Pulls device farm from GitHub into devicefarm directory'
-            commandLine "git", "clone", "https://github.com/fobsolutions/cify-device-farm", "devicefarm"
-        }
     }
 }

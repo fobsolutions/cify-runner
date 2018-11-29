@@ -29,9 +29,4 @@ class CifyPluginTest extends GroovyTestCase {
         assert project.tasks["help"] instanceof Task
         assert project.tasks["parameters"] instanceof CifyExtensionTask
     }
-
-    void testReporterInit() {
-        assert !project.reporter.runId.isEmpty()
-        assert project.reporter.reporterPlugin == Constants.REPORTER_PLUGIN_PATH
-    }
 }

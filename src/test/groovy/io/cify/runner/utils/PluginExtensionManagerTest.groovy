@@ -164,10 +164,7 @@ class PluginExtensionManagerTest extends GroovyTestCase {
 
     void testWithMissingCapabilitiesFile() {
         List<Capabilities> capabilitiesSet = project.cify.capabilitiesSet
-        assert capabilitiesSet.size() == 1
-        assert capabilitiesSet.first().getAndroid().isEmpty()
-        assert capabilitiesSet.first().getIos().isEmpty()
-        assert capabilitiesSet.first().getBrowser().isEmpty()
+        assert capabilitiesSet.size() == 0
     }
 
     void testWithCapabilities() {
@@ -190,12 +187,12 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         manager.setupParameters()
         List capabilitiesSet = project.cify.capabilitiesSet
         capabilitiesSet.each { Capabilities capabilities ->
-            assert capabilities.getAndroid().get("test") == "test1Value"
-            assert capabilities.getAndroid().get("test2") == "test2Value"
-            assert capabilities.getIos().get("test") == "test1Value"
-            assert capabilities.getIos().get("test2") == "test2Value"
-            assert capabilities.getBrowser().get("test") == "test1Value"
-            assert capabilities.getBrowser().get("test2") == "test2Value"
+            assert capabilities.getAndroid().first().get("test") == "test1Value"
+            assert capabilities.getAndroid().first().get("test2") == "test2Value"
+            assert capabilities.getIos().first().get("test") == "test1Value"
+            assert capabilities.getIos().first().get("test2") == "test2Value"
+            assert capabilities.getBrowser().first().get("test") == "test1Value"
+            assert capabilities.getBrowser().first().get("test2") == "test2Value"
         }
     }
 
@@ -204,8 +201,8 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         manager.setupParameters()
 
         project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().get("remote") == "https://www.fob-solutions.com"
-            capabilities.getAndroid().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getBrowser().first().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getAndroid().first().get("remote") == "https://www.fob-solutions.com"
 
         }
     }
@@ -216,8 +213,8 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         project.ext.set("farmUrl", "https://www.fob-solutions.com")
         manager.setupParameters()
         project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().get("remote") == "https://www.fob-solutions.com"
-            capabilities.getAndroid().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getBrowser().first().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getAndroid().first().get("remote") == "https://www.fob-solutions.com"
         }
     }
 
@@ -320,38 +317,6 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         project.ext.set("videoRecord", "true")
         manager.setupParameters()
         assert project.cify.videoRecord == "true"
-    }
-
-    void testAuthService() {
-        project.ext.set("authService", "test.com")
-        manager.setupParameters()
-        assert project.reporter.authService == "test.com"
-    }
-
-    void testProjectName() {
-        project.ext.set("projectName", "project-2")
-        manager.setupParameters()
-        assert project.reporter.projectName == "project-2"
-    }
-
-    void testSuiteName() {
-        project.ext.set("suiteName", "test-suite-2")
-        manager.setupParameters()
-        assert project.reporter.suiteName == "test-suite-2"
-    }
-
-    void testAccessKey() {
-        project.ext.set("accessKey", "1q2w3e4r5t6y7u")
-        manager.setupParameters()
-        assert project.reporter.accessKey == "1q2w3e4r5t6y7u"
-    }
-
-    void testDefaultReporterParameters() {
-        manager.setupParameters()
-        assert project.reporter.suiteName == null
-        assert project.reporter.projectName == null
-        assert project.reporter.accessKey == null
-        assert project.reporter.authService == "auth.cify.io"
     }
 
     void testRecordWithInvalid() {

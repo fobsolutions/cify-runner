@@ -102,9 +102,10 @@ class CapabilityParserTest extends GroovyTestCase {
         extras.put("test", "testValue")
         List capabilitiesList = getCapabilitiesList(capabilities, extras)
         capabilitiesList.each { Capabilities capabilitiesObject ->
-            assert capabilitiesObject.getIos().get("test") != null
-            assert capabilitiesObject.getAndroid().get("test") != null
-            assert capabilitiesObject.getBrowser().get("test") != null
+            assert capabilitiesObject.getIos().first().get("test") != null
+            assert capabilitiesObject.getAndroid().first().get("test") != null
+            assert capabilitiesObject.getBrowser().first().get("test") != null
+            assert capabilitiesObject.getCustom().first().get("test") != null
         }
     }
 }

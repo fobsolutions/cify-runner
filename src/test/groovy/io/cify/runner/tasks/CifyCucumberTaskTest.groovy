@@ -2,7 +2,7 @@ package io.cify.runner.tasks
 
 import io.cify.runner.CifyPlugin
 import io.cify.runner.CifyPluginExtension
-import io.cify.runner.ReporterExtension
+
 import io.cify.runner.utils.CucumberArgsBuilder
 import io.cify.runner.utils.PluginExtensionManager
 import org.gradle.api.Project
@@ -35,7 +35,7 @@ class CifyCucumberTaskTest extends GroovyTestCase {
         extension.strict = true
         extension.strict = true
 
-        List expected = new CucumberArgsBuilder(params["taskName"], project.reporter as ReporterExtension)
+        List expected = new CucumberArgsBuilder(params["taskName"])
                 .addFeatureDir(extension.featureDirs)
                 .addTags(extension.tags)
                 .addPlugins(extension.cucumberPlugins)
@@ -45,7 +45,7 @@ class CifyCucumberTaskTest extends GroovyTestCase {
                 .setMonochrome(extension.monochrome)
                 .build()
 
-        List actual = CifyCucumberTask.getCucumberArgs(extension, project.reporter as ReporterExtension, params["taskName"], null)
+        List actual = CifyCucumberTask.getCucumberArgs(extension, params["taskName"], null)
 
         assert expected == actual
     }

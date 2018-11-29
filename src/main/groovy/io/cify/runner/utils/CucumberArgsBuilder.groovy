@@ -1,8 +1,4 @@
 package io.cify.runner.utils
-
-import io.cify.runner.Constants
-import io.cify.runner.ReporterExtension
-
 /**
  * This class is used to build cucumber arguments List.
  *
@@ -25,11 +21,8 @@ class CucumberArgsBuilder {
     String featureDir
     String taskName
 
-    ReporterExtension reporterExtension
-
-    CucumberArgsBuilder(String taskName, ReporterExtension reporterExtension) {
+    CucumberArgsBuilder(String taskName) {
         this.taskName = taskName
-        this.reporterExtension = reporterExtension
     }
 
     /**
@@ -68,12 +61,6 @@ class CucumberArgsBuilder {
                 }
 
                 this.plugins << it
-            }
-
-            if (reporterExtension.accessKey && reporterExtension.projectName
-                    && reporterExtension.suiteName && reporterExtension.authService) {
-                this.plugins << PLUGIN_OPTION
-                this.plugins << Constants.REPORTER_PLUGIN_PATH
             }
         }
         this

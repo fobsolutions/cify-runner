@@ -1,7 +1,7 @@
 package io.cify.runner.utils
 
 import groovyx.gpars.GParsPool
-import io.cify.runner.ReporterExtension
+
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
 import org.apache.logging.log4j.MarkerManager
@@ -81,13 +81,6 @@ class TaskPoolManager {
             LOG.debug(MARKER, "Task pool contains " + tasksPool.size() + " tasks")
             LOG.debug(MARKER, "Number of threads: " + threadCount)
 
-            if (isReporting() && tasksPool.size() > 0) {
-                def params = [:]
-                params.putAll(tasksPool.last().taskParams as Map)
-                params.put('suiteFinished', 'true')
-                addTask('endTask', tasksPool.last().getClass(), params)
-            }
-
             List failedTasks = []
             GParsPool.withPool(threadCount) {
 
@@ -101,7 +94,7 @@ class TaskPoolManager {
                         failedTasks.add(it)
                     }
                 }
-                if (isReporting() && failedTasks.isEmpty() || !project.cify.rerunFailedTests) {
+                if (!project.cify.rerunFailedTests) {
                     try {
                         tasksPool.find { it.taskParams['suiteFinished'] == 'true' }?.execute()
                     } catch (all) {
@@ -114,10 +107,6 @@ class TaskPoolManager {
                     LOG.debug(MARKER, "Failed task pool contains " + failedTasks.size() + " tasks")
                     LOG.debug(MARKER, "Number of threads: " + threadCount)
 
-                    if (isReporting()) {
-                        failedTasks.add(tasksPool.find { it.taskParams['suiteFinished'] == 'true' })
-                    }
-
                     failedTasks.eachParallel {
                         try {
                             if (it.taskParams['suiteFinished'] != "true") {
@@ -127,27 +116,10 @@ class TaskPoolManager {
                             LOG.error(MARKER, "Re-running for task $it.name failed cause $all")
                         }
                     }
-                    if (isReporting()) {
-                        try {
-                            failedTasks.find { it.taskParams['suiteFinished'] == 'true' }?.execute()
-                        } catch (all) {
-                            LOG.error(MARKER, "Re-running failed tasks finished. Failed to run end of suite task. Cause: " + all.message)
-                        }
-                    }
                 }
             }
         } catch (all) {
             throw new CifyPluginException("TaskPoolManager: Exception occurred when executing tasks in parallel. Cause: " + all.message)
         }
-    }
-
-    /**
-     * Returns true if all Reporter parameters are provided
-     * @return
-     */
-    private boolean isReporting() {
-        ReporterExtension reporterExtension = project.reporter as ReporterExtension
-        return (reporterExtension.accessKey && reporterExtension.projectName
-                && reporterExtension.suiteName && reporterExtension.authService)
     }
 }

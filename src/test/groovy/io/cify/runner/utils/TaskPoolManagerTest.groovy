@@ -19,9 +19,9 @@ class TaskPoolManagerTest extends GroovyTestCase {
 
     void setUp() {
         plugin = new CifyPlugin();
-        project = ProjectBuilder.builder().build();
+        project = ProjectBuilder.builder().build()
         project.getPluginManager().apply('java')
-        plugin.apply(project);
+        plugin.apply(project)
         project.task(testTask, type: CifyCucumberTask)
         taskPoolManager = new TaskPoolManager(project)
         new PluginExtensionManager(project).setupParameters()

@@ -4,7 +4,7 @@ import groovy.json.JsonOutput
 import groovy.json.StringEscapeUtils
 import io.cify.runner.CifyPluginExtension
 import io.cify.runner.Constants
-import io.cify.runner.ReporterExtension
+
 import io.cify.runner.utils.CucumberArgsBuilder
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
@@ -34,7 +34,6 @@ class CifyCucumberTask extends JavaExec {
 
             args = getCucumberArgs(
                     project.cify as CifyPluginExtension,
-                    project.reporter as ReporterExtension,
                     taskParams['taskName'] as String,
                     taskParams['featurePath'] as String
             )
@@ -80,8 +79,8 @@ class CifyCucumberTask extends JavaExec {
      * @param featurePath path for feature files
      * @return List of arguments
      */
-    static List getCucumberArgs(CifyPluginExtension cify, ReporterExtension reporter, String taskName, String featurePath) {
-        return new CucumberArgsBuilder(taskName, reporter)
+    static List getCucumberArgs(CifyPluginExtension cify, String taskName, String featurePath) {
+        return new CucumberArgsBuilder(taskName)
                 .addFeatureDir(featurePath ? featurePath : cify.featureDirs)
                 .addTags(cify.tags)
                 .addPlugins(cify.cucumberPlugins)
