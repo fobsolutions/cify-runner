@@ -63,11 +63,6 @@ class CifyPluginExtension {
     String farmUrl = ""
 
     /**
-     * Device capabilities for every capability
-     * */
-    String extraCapabilities = ""
-
-    /**
      * Capabilities from command line
      * */
     String capabilities = ""
@@ -134,9 +129,6 @@ class CifyPluginExtension {
 
             -PfarmUrl               Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string
                                     Usage: ./gradlew cucumber -PfarmUrl=http://localhost:63342/
-
-            -PextraCapabilities     Map of capabilities to add to every capability in list
-                                    Usage: ./gradlew cucumber -PextraCapabilities=remote=http://localhost:63342/&secondParam=123
 
             -PvideoRecord           Record video for every device from creating driver til closing driver. Defaults to false
                                     Usage: ./gradlew cucumber -PvideoRecord=true

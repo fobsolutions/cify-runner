@@ -14,7 +14,6 @@ import static io.cify.runner.utils.CapabilityParser.*
  * Created by FOB Solutions
  */
 class CapabilityParserTest extends GroovyTestCase {
-
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
     private File capabilitiesFile
@@ -37,7 +36,7 @@ class CapabilityParserTest extends GroovyTestCase {
             "    }\n" +
             "  },\n" +
             "\n" +
-            "  \"set\": {\n" +
+            "  \"capabilities\": {\n" +
             "    \"browser\": [\n" +
             "      {\n" +
             "        \"version\": \"44\",\n" +
@@ -64,23 +63,54 @@ class CapabilityParserTest extends GroovyTestCase {
         plugin = new CifyPlugin()
         testProjectDir.create()
         capabilitiesFile = testProjectDir.newFile(new CifyPluginExtension().capabilitiesFilePath)
-        capabilitiesFile.write(capabilities)
         project = ProjectBuilder.builder().build()
         plugin.apply(project)
         manager = new PluginExtensionManager(project)
     }
 
-    void testGetCapabilities() {
+    void testGetCapabilitiesVariations() {
         LazyMap capabilitiesMap = readFromContent(capabilities) as LazyMap
         List capabilities = getCapabilitiesVariations(capabilitiesMap)
         assert capabilities.size() == 3
+    }
+
+    void testGenerateCapabilitiesList(){
+        Capabilities item
+
+        createCapabilitiesFile(null, true)
+        List capabilitiesListNull = generateCapabilitiesList(capabilitiesFile.absolutePath,"","")
+        assert capabilitiesListNull.size() == 8
+
+        createCapabilitiesFile(STRATEGY_VARIATIONS, true)
+        List<Capabilities> capabilitiesListVariations = generateCapabilitiesList(capabilitiesFile.absolutePath,"","")
+        assert capabilitiesListVariations.size() == 8
+
+        capabilitiesListVariations.each {
+            item = it as Capabilities
+            assert item.browser.size() + item.android.size() + item.ios.size() == 3
+        }
+
+        createCapabilitiesFile(STRATEGY_ONE_BY_ONE, true)
+        List capabilitiesListOneByOne = generateCapabilitiesList(capabilitiesFile.absolutePath,"","")
+        assert capabilitiesListOneByOne.size() == 7
+
+        capabilitiesListOneByOne.each {
+            item = it as Capabilities
+            assert item.browser.size() + item.android.size() + item.ios.size() == 1
+        }
+
+        createCapabilitiesFile(STRATEGY_ALL_IN_ONE, true)
+        List capabilitiesListAllInOne = generateCapabilitiesList(capabilitiesFile.absolutePath,"","")
+        assert capabilitiesListAllInOne.size() == 1
+
+        item = capabilitiesListAllInOne.get(0) as Capabilities
+        assert item.browser.size() + item.android.size() + item.ios.size() == 7
     }
 
     void testGetCapabilitiesWithEmptyList() {
         List capabilities = getCapabilitiesList([], new LazyMap())
         assert capabilities.isEmpty()
     }
-
 
     void testReadCapabilitiesFromUrl() {
         String path = "http://www.fob-solutions.com/"
@@ -101,10 +131,69 @@ class CapabilityParserTest extends GroovyTestCase {
         LazyMap extras = new LazyMap()
         extras.put("test", "testValue")
         List capabilitiesList = getCapabilitiesList(capabilities, extras)
-        capabilitiesList.each { Capabilities capabilitiesObject ->
-            assert capabilitiesObject.getIos().get("test") != null
-            assert capabilitiesObject.getAndroid().get("test") != null
-            assert capabilitiesObject.getBrowser().get("test") != null
+        capabilitiesList.each { def capabilitiesObject ->
+            assert capabilitiesObject.getIos().each {
+                it.get("test") != null
+            }
+            assert capabilitiesObject.getAndroid().each {
+                it.get("test") != null
+            }
+            assert capabilitiesObject.getBrowser().each {
+                it.get("test") != null
+            }
         }
+    }
+
+    private createCapabilitiesFile(String strategy, boolean hasContent) {
+        String str = getCapabilitiesStr(strategy, hasContent)
+        capabilitiesFile.write(str)
+    }
+
+    private static String getCapabilitiesStr(String strategy, boolean hasContent) {
+        strategy = strategy ? "  \"strategy\": \"$strategy\"," : ""
+        String content = ""
+        if (hasContent) {
+            content = "  \"capabilities\": {" +
+                "    \"browser\": [" +
+                "      {" +
+                "        \"version\": \"48\"," +
+                "        \"capability\": \"chrome\"" +
+                "      }," +
+                "      {" +
+                "        \"version\": \"77\"," +
+                "        \"capability\": \"firefox\"" +
+                "      }," +
+                "      {" +
+                "        \"version\": \"44\"," +
+                "        \"capability\": \"safari\"" +
+                "      }," +
+                "      {" +
+                "        \"version\": \"6.0\"," +
+                "        \"capability\": \"android\"" +
+                "      }" +
+                "    ]," +
+                "    \"ios\": [" +
+                "      {" +
+                "        \"version\": \"9.3.5\"," +
+                "        \"capability\": \"ipad\"" +
+                "      }," +
+                "      {" +
+                "        \"version\": \"10.0.0\"," +
+                "        \"capability\": \"iphone\"" +
+                "      }" +
+                "    ]," +
+                "    \"android\": [" +
+                "      {" +
+                "        \"version\": \"6.0\"," +
+                "        \"capability\": \"android\"" +
+                "      }" +
+                "    ]" +
+                "  }"
+        }
+        String capabilities = "{" +
+                strategy +
+                content
+                "}"
+        return capabilities
     }
 }
