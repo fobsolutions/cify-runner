@@ -131,13 +131,13 @@ class CapabilityParser {
 
         androidCapabilitiesList.each {
             Capabilities capability = new Capabilities()
-            capability.getIos().add(it as LazyMap)
+            capability.getAndroid().add(it as LazyMap)
             capabilities.add(capability)
         }
 
         browserCapabilitiesList.each {
             Capabilities capability = new Capabilities()
-            capability.getIos().add(it as LazyMap)
+            capability.getBrowser().add(it as LazyMap)
             capabilities.add(capability)
         }
 
