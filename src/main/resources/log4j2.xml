@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
     <Appenders>
-        <RollingFile name="RollingFile" filename="build/cify/log/cify.log"
-                     filepattern="build/cify/log/cify-framework%d{yyyy-MM-dd}.log">
+        <RollingFile name="RollingFile"
+                     filename="build/cify/runner-log/cify-runner_${date:yyyyMMdd_HHmmss}${sys:task:-}.log"
+                     filepattern="build/cify/runner-log/cify-runner_%d{yyyyMMdd_HHmmss}${sys:task:-}.log">
             <PatternLayout pattern="[%-5level] %d{dd.MM.yyyy HH:mm:ss} [%t] %c{1} - %replace{%msg}{testdroid_(password|apiKey)=(.*?)(,\s|\u007D)}{testdroid_$1=***$3}%n"/>
             <Policies>
-                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
             </Policies>
             <DefaultRolloverStrategy max="4"/>
         </RollingFile>
