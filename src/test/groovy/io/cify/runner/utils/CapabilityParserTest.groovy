@@ -121,7 +121,7 @@ class CapabilityParserTest extends GroovyTestCase {
 
     void testGetCapabilitiesWithIncorrectInput() {
         shouldFail {
-            getCapabilitiesList(["test", "test"] as List, new LazyMap())
+            getCapabilitiesList(["capability1": "value1", "capability2": "value2"] as List, new LazyMap())
         }
     }
 
@@ -132,14 +132,14 @@ class CapabilityParserTest extends GroovyTestCase {
         extras.put("test", "testValue")
         List capabilitiesList = getCapabilitiesList(capabilities, extras)
         capabilitiesList.each { def capabilitiesObject ->
-            assert capabilitiesObject.getIos().each {
-                it.get("test") != null
+            capabilitiesObject.getIos().each {
+                assert it.get("test") != null
             }
-            assert capabilitiesObject.getAndroid().each {
-                it.get("test") != null
+            capabilitiesObject.getAndroid().each {
+                assert it.get("test") != null
             }
-            assert capabilitiesObject.getBrowser().each {
-                it.get("test") != null
+            capabilitiesObject.getBrowser().each {
+                assert it.get("test") != null
             }
         }
     }

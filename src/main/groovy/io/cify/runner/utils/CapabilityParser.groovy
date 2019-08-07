@@ -25,11 +25,12 @@ class CapabilityParser {
      */
     public static final String STRATEGY_VARIATIONS = "variations"
 
+    public static final String ANDROID = "android"
+    public static final String IOS = "ios"
+    public static final String BROWSER = "browser"
+
     private static final Logger LOG = LogManager.getLogger(this.class) as Logger
 
-    private static final String ANDROID = "android"
-    private static final String IOS = "ios"
-    private static final String BROWSER = "browser"
     private static final String CAPABILITIES = "capabilities"
     private static final String STRATEGY = "strategy"
 
@@ -47,6 +48,7 @@ class CapabilityParser {
             capabilitiesContent = getCapabilitiesFromFile(capabilitiesFilePath)
         }
 
+        LOG.debug("capabilitiesContent: $capabilitiesContent")
         List capabilities = getCapabilities(capabilitiesContent, capabilitiesContent.get(STRATEGY) as String)
         LazyMap extraCapabilitiesMap = new LazyMap()
 
@@ -56,7 +58,7 @@ class CapabilityParser {
 
         List capabilitiesList = getCapabilitiesList(capabilities, extraCapabilitiesMap)
 
-        LOG.debug("Capabilities list is: " + capabilitiesList.toArray())
+        LOG.debug("Parsed capabilities list is: ${Capabilities.toPrettyString(capabilitiesList)}")
         return capabilitiesList
     }
 
@@ -68,6 +70,7 @@ class CapabilityParser {
      * @return the list of {@link Capabilities}
      */
     private static List getCapabilities(LazyMap capabilitiesFileContent, String strategy) {
+        LOG.debug("Parsing capabilities with strategy: " + strategy)
         switch (strategy) {
             case STRATEGY_VARIATIONS:
                 return getCapabilitiesVariations(capabilitiesFileContent)
@@ -87,25 +90,58 @@ class CapabilityParser {
      * @return the list of {@link Capabilities}
      */
     private static List getCapabilitiesVariations(LazyMap capabilitiesFileContent) {
-        List iOSCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, IOS)
-        List browserCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, BROWSER)
-        List androidCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, ANDROID)
+        Map<String, List> capabilitiesMap = capabilitiesFileContent[CAPABILITIES] as Map<String, List> ?: new HashMap<String, List>()
+        //Remove empty device categories
+        def iterator = capabilitiesMap.iterator()
+        while (iterator.hasNext()) {
+            List list = iterator.next().value
+            if (!list || list.size() == 0) {
+                iterator.remove()
+            }
+        }
 
+        Set<String> deviceCategories = capabilitiesMap.keySet()
         List capabilities = []
 
-        for (int i = 0; i < iOSCapabilitiesList.size(); i++) {
-            LazyMap ios = iOSCapabilitiesList.get(i) as LazyMap
-            for (int a = 0; a < androidCapabilitiesList.size(); a++) {
-                LazyMap android = androidCapabilitiesList.get(a) as LazyMap
-                for (int b = 0; b < browserCapabilitiesList.size(); b++) {
-                    LazyMap browser = browserCapabilitiesList.get(b) as LazyMap
+        switch (deviceCategories.size()) {
+            case 3:
+                for (int i = 0; i < capabilitiesMap[IOS].size(); i++) {
+                    LazyMap ios = capabilitiesMap[IOS].get(i) as LazyMap
+                    for (int a = 0; a < capabilitiesMap[ANDROID].size(); a++) {
+                        LazyMap android = capabilitiesMap[ANDROID].get(a) as LazyMap
+                        for (int b = 0; b < capabilitiesMap[BROWSER].size(); b++) {
+                            LazyMap browser = capabilitiesMap[BROWSER].get(b) as LazyMap
+                            Capabilities capability = new Capabilities()
+                            capability.addCapabilities(IOS, ios)
+                            capability.addCapabilities(ANDROID, android)
+                            capability.getBrowser().add(browser)
+                            capabilities.add(capability)
+                        }
+                    }
+                }
+                break
+            case 2:
+                String deviceCategory1 = deviceCategories[0]
+                String deviceCategory2 = deviceCategories[1]
+                for (int i = 0; i < capabilitiesMap[deviceCategory1].size(); i++) {
+                    LazyMap capabilities1 = capabilitiesMap[deviceCategory1].get(i) as LazyMap
+                    for (int j = 0; j < capabilitiesMap[deviceCategory2].size(); j++) {
+                        LazyMap capabilities2 = capabilitiesMap[deviceCategory2].get(j) as LazyMap
+                        Capabilities capability = new Capabilities()
+                        capability.addCapabilities(deviceCategory1, capabilities1)
+                        capability.addCapabilities(deviceCategory2, capabilities2)
+                        capabilities.add(capability)
+                    }
+                }
+                break
+            case 1:
+                String deviceCategory = deviceCategories[0]
+                for (int i = 0; i < capabilitiesMap[deviceCategory].size(); i++) {
                     Capabilities capability = new Capabilities()
-                    capability.getIos().add(ios)
-                    capability.getAndroid().add(android)
-                    capability.getBrowser().add(browser)
+                    capability.addCapabilities(deviceCategory, capabilitiesMap[deviceCategory].get(i) as LazyMap)
                     capabilities.add(capability)
                 }
-            }
+                break
         }
         return capabilities
     }
@@ -172,7 +208,7 @@ class CapabilityParser {
         if (capabilities != null && capabilities[type] != null) {
             return capabilities[type] as List
         } else {
-            return [[:]]
+            return []
         }
     }
 

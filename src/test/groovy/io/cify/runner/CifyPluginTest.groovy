@@ -15,9 +15,9 @@ class CifyPluginTest extends GroovyTestCase {
     private CifyPlugin plugin
 
     void setUp() {
-        project = ProjectBuilder.builder().build();
-        plugin = new CifyPlugin();
-        plugin.apply(project);
+        project = ProjectBuilder.builder().build()
+        plugin = new CifyPlugin()
+        plugin.apply(project)
     }
 
     void testShouldCreateExtension() {
@@ -26,7 +26,7 @@ class CifyPluginTest extends GroovyTestCase {
 
     void testApply() {
         assert project.tasks["cucumber"] instanceof CifyTask
-        assert project.tasks["help"] instanceof Task
+        assert project.tasks["cifyhelp"] instanceof Task
         assert project.tasks["parameters"] instanceof CifyExtensionTask
     }
 

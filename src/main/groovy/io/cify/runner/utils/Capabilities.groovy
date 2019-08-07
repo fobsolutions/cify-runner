@@ -2,6 +2,10 @@ package io.cify.runner.utils
 
 import groovy.json.internal.LazyMap
 
+import static io.cify.runner.utils.CapabilityParser.ANDROID
+import static io.cify.runner.utils.CapabilityParser.BROWSER
+import static io.cify.runner.utils.CapabilityParser.IOS
+
 /**
  * Created by FOB Solutions
  *
@@ -31,8 +35,29 @@ class Capabilities {
     }
 
     /**
+     * Adds capabilities to specified device category
+     * @param deviceCategory capabilities device category
+     * @param capabilities capabilities to be added
+     */
+    void addCapabilities(String deviceCategory, LazyMap capabilities) {
+        switch (deviceCategory) {
+            case IOS:
+                ios.add(capabilities)
+                break
+            case ANDROID:
+                android.add(capabilities)
+                break
+            case BROWSER:
+                browser.add(capabilities)
+                break
+            default:
+                throw new CifyPluginException("Unknown device category")
+        }
+    }
+
+    /**
      * Generate unique string from capabilities object
-     * */
+     */
     @Override
     String toString() {
         String browserCapsId = getCapabilityIdentifier(getBrowser())
@@ -44,6 +69,22 @@ class Capabilities {
         iosCapsId = iosCapsId ? "_" + iosCapsId : ""
 
         return browserCapsId + androidCapsId + iosCapsId
+    }
+
+    /*
+     * Generates class data representation string
+     */
+    String toPrettyString() {
+        return "[browser: $browser, android: $android, ios: $ios]"
+    }
+
+    static String toPrettyString(List<Capabilities> capabilitiesList) {
+        String prettyString = "["
+        capabilitiesList.forEach() {
+            prettyString += "${it.toPrettyString()}, "
+        }
+        prettyString = "${prettyString.take(prettyString.length()-2)}]"
+        return prettyString
     }
 
     /**

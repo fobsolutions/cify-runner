@@ -18,10 +18,10 @@ class TaskPoolManagerTest extends GroovyTestCase {
     public static final THREADCOUNT = 3
 
     void setUp() {
-        plugin = new CifyPlugin();
-        project = ProjectBuilder.builder().build();
+        plugin = new CifyPlugin()
+        project = ProjectBuilder.builder().build()
         project.getPluginManager().apply('java')
-        plugin.apply(project);
+        plugin.apply(project)
         project.task(testTask, type: CifyCucumberTask)
         taskPoolManager = new TaskPoolManager(project)
         new PluginExtensionManager(project).setupParameters()
@@ -113,7 +113,7 @@ class TestTask extends DefaultTask {
 
     static List threadsNames = new ArrayList()
     static int count = 0
-    Map<String, String> taskParams
+    Map<String, String> taskParams = new HashMap<>()
 
     @TaskAction
     void exec() {

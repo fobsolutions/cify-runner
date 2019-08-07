@@ -151,16 +151,7 @@ class PluginExtensionManagerTest extends GroovyTestCase {
 
     void testWithMissingCapabilitiesFile() {
         List<Capabilities> capabilitiesSet = project.cify.capabilitiesSet
-        assert capabilitiesSet.size() == 1
-        assert capabilitiesSet.first().getAndroid().each {
-            it.isEmpty()
-        }
-        assert capabilitiesSet.first().getIos().each {
-            it.isEmpty()
-        }
-        assert capabilitiesSet.first().getBrowser().each {
-            it.isEmpty()
-        }
+        assert capabilitiesSet.size() == 0
     }
 
     void testWithCapabilities() {
