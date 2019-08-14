@@ -10,33 +10,47 @@ import org.apache.logging.log4j.core.Logger
  *
  * Created by FOB Solutions
  */
-
 class CapabilityParser {
+    /**
+     * Capabilities parsing strategy, to put all capabilities into one {@link Capabilities} object
+     */
+    public static final String STRATEGY_ALL_IN_ONE = "all_in_one"
+    /**
+     * Capabilities parsing strategy, to put each capability into a separate {@link Capabilities} object
+     */
+    public static final String STRATEGY_ONE_BY_ONE = "one_by_one"
+    /**
+     * Capabilities parsing strategy, that creates all possible variations of capabilities with one capability
+     * of each kind (browser, android, ios) per {@link Capabilities} object
+     */
+    public static final String STRATEGY_VARIATIONS = "variations"
+
+    public static final String ANDROID = "android"
+    public static final String IOS = "ios"
+    public static final String BROWSER = "browser"
 
     private static final Logger LOG = LogManager.getLogger(this.class) as Logger
 
-    private static final String ANDROID = "android"
-    private static final String IOS = "ios"
-    private static final String BROWSER = "browser"
-    private static final String SET = "set"
-    private static final String DEFAULTS = "defaults"
+    private static final String CAPABILITIES = "capabilities"
+    private static final String STRATEGY = "strategy"
 
     /**
-     * Gets full capabilities list from file or default list
+     * Gets full capabilities list from a file
      *
      * @return list of capabilities
-     * */
-    static List generateCapabilitiesList(String capabilitiesFilePath, String extraCapabilities, String farmUrl, String capabilitiesFromCmd) {
-
+     */
+    static List<Capabilities> generateCapabilitiesList(String capabilitiesFilePath, String farmUrl, String capabilitiesFromCmd) {
         LazyMap capabilitiesContent
+
         if (!capabilitiesFromCmd.isEmpty()) {
             capabilitiesContent = new JsonSlurper().parseText(capabilitiesFromCmd) as LazyMap
         } else {
-            capabilitiesContent = getCapabilitiesFromFile(capabilitiesFilePath.toString())
+            capabilitiesContent = getCapabilitiesFromFile(capabilitiesFilePath)
         }
 
-        List capabilities = getCapabilitiesVariations(capabilitiesContent)
-        LazyMap extraCapabilitiesMap = parseExtraCapabilities(extraCapabilities.toString())
+        LOG.debug("capabilitiesContent: $capabilitiesContent")
+        List capabilities = getCapabilities(capabilitiesContent, capabilitiesContent.get(STRATEGY) as String)
+        LazyMap extraCapabilitiesMap = new LazyMap()
 
         if (!farmUrl.isEmpty()) {
             extraCapabilitiesMap.put("remote", farmUrl)
@@ -44,38 +58,140 @@ class CapabilityParser {
 
         List capabilitiesList = getCapabilitiesList(capabilities, extraCapabilitiesMap)
 
-        LOG.debug("Capabilities list is: " + capabilitiesList.toArray())
-        capabilitiesList
+        LOG.debug("Parsed capabilities list is: ${Capabilities.toPrettyString(capabilitiesList)}")
+        return capabilitiesList
     }
 
     /**
-     * Gets all variations from capabilities file content
+     * Gets {@link Capabilities} based on {@link String} strategy specified
+     *
+     * @param capabilitiesFileContent capabilities file content
+     * @param strategy parsing strategy
+     * @return the list of {@link Capabilities}
+     */
+    private static List getCapabilities(LazyMap capabilitiesFileContent, String strategy) {
+        LOG.debug("Parsing capabilities with strategy: " + strategy)
+        switch (strategy) {
+            case STRATEGY_VARIATIONS:
+                return getCapabilitiesVariations(capabilitiesFileContent)
+            case STRATEGY_ONE_BY_ONE:
+                return getCapabilitiesOneByOne(capabilitiesFileContent)
+            case STRATEGY_ALL_IN_ONE:
+                return getCapabilitiesAllInOne(capabilitiesFileContent)
+            default:
+                return getCapabilitiesVariations(capabilitiesFileContent)
+        }
+    }
+
+    /**
+     * Gets all variations of capabilities from capabilities file content
      *
      * @param capabilitiesFileContent - capabilities file content
-     * @return list of capabilities variations
-     * */
-    static List getCapabilitiesVariations(LazyMap capabilitiesFileContent) {
+     * @return the list of {@link Capabilities}
+     */
+    private static List getCapabilitiesVariations(LazyMap capabilitiesFileContent) {
+        Map<String, List> capabilitiesMap = capabilitiesFileContent[CAPABILITIES] as Map<String, List> ?: new HashMap<String, List>()
+        //Remove empty device categories
+        def iterator = capabilitiesMap.iterator()
+        while (iterator.hasNext()) {
+            List list = iterator.next().value
+            if (!list || list.size() == 0) {
+                iterator.remove()
+            }
+        }
+
+        Set<String> deviceCategories = capabilitiesMap.keySet()
+        List capabilities = []
+
+        switch (deviceCategories.size()) {
+            case 3:
+                for (int i = 0; i < capabilitiesMap[IOS].size(); i++) {
+                    LazyMap ios = capabilitiesMap[IOS].get(i) as LazyMap
+                    for (int a = 0; a < capabilitiesMap[ANDROID].size(); a++) {
+                        LazyMap android = capabilitiesMap[ANDROID].get(a) as LazyMap
+                        for (int b = 0; b < capabilitiesMap[BROWSER].size(); b++) {
+                            LazyMap browser = capabilitiesMap[BROWSER].get(b) as LazyMap
+                            Capabilities capability = new Capabilities()
+                            capability.addCapabilities(IOS, ios)
+                            capability.addCapabilities(ANDROID, android)
+                            capability.getBrowser().add(browser)
+                            capabilities.add(capability)
+                        }
+                    }
+                }
+                break
+            case 2:
+                String deviceCategory1 = deviceCategories[0]
+                String deviceCategory2 = deviceCategories[1]
+                for (int i = 0; i < capabilitiesMap[deviceCategory1].size(); i++) {
+                    LazyMap capabilities1 = capabilitiesMap[deviceCategory1].get(i) as LazyMap
+                    for (int j = 0; j < capabilitiesMap[deviceCategory2].size(); j++) {
+                        LazyMap capabilities2 = capabilitiesMap[deviceCategory2].get(j) as LazyMap
+                        Capabilities capability = new Capabilities()
+                        capability.addCapabilities(deviceCategory1, capabilities1)
+                        capability.addCapabilities(deviceCategory2, capabilities2)
+                        capabilities.add(capability)
+                    }
+                }
+                break
+            case 1:
+                String deviceCategory = deviceCategories[0]
+                for (int i = 0; i < capabilitiesMap[deviceCategory].size(); i++) {
+                    Capabilities capability = new Capabilities()
+                    capability.addCapabilities(deviceCategory, capabilitiesMap[deviceCategory].get(i) as LazyMap)
+                    capabilities.add(capability)
+                }
+                break
+        }
+        return capabilities
+    }
+
+    /**
+     * Gets capabilities from capabilities file content and puts each capability into a separate {@link Capabilities} object
+     *
+     * @param capabilitiesFileContent - capabilities file content
+     * @return the list of {@link Capabilities}
+     */
+    private static List getCapabilitiesOneByOne(LazyMap capabilitiesFileContent) {
         List iOSCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, IOS)
         List browserCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, BROWSER)
         List androidCapabilitiesList = getCapabilitiesForType(capabilitiesFileContent, ANDROID)
 
-        List capabilitiesSet = []
+        List capabilities = []
 
-        for (int i = 0; i < iOSCapabilitiesList.size(); i++) {
-            LazyMap ios = iOSCapabilitiesList.get(i) as LazyMap
-            for (int a = 0; a < androidCapabilitiesList.size(); a++) {
-                LazyMap android = androidCapabilitiesList.get(a) as LazyMap
-                for (int b = 0; b < browserCapabilitiesList.size(); b++) {
-                    LazyMap browser = browserCapabilitiesList.get(b) as LazyMap
-                    Capabilities capability = new Capabilities()
-                    capability.setIos(ios)
-                    capability.setAndroid(android)
-                    capability.setBrowser(browser)
-                    capabilitiesSet.add(capability)
-                }
-            }
+        iOSCapabilitiesList.each {
+            Capabilities capability = new Capabilities()
+            capability.getIos().add(it as LazyMap)
+            capabilities.add(capability)
         }
-        capabilitiesSet
+
+        androidCapabilitiesList.each {
+            Capabilities capability = new Capabilities()
+            capability.getAndroid().add(it as LazyMap)
+            capabilities.add(capability)
+        }
+
+        browserCapabilitiesList.each {
+            Capabilities capability = new Capabilities()
+            capability.getBrowser().add(it as LazyMap)
+            capabilities.add(capability)
+        }
+
+        return capabilities
+    }
+
+    /**
+     * Gets capabilities from capabilities file content and puts them all to one {@link Capabilities} object
+     *
+     * @param capabilitiesFileContent - capabilities file content
+     * @return the list of {@link Capabilities}
+     */
+    private static List getCapabilitiesAllInOne(LazyMap capabilitiesFileContent) {
+        List capabilities = []
+        if (capabilitiesFileContent != null && !capabilitiesFileContent.isEmpty()) {
+            capabilities.add(capabilitiesFileContent.get(CAPABILITIES) as Capabilities)
+        }
+        return capabilities
     }
 
     /**
@@ -83,16 +199,16 @@ class CapabilityParser {
      *
      * @param capabilityFileContent - Capabilities json file content
      * @type - device type
-     * */
-    static List getCapabilitiesForType(LazyMap capabilityFileContent, String type) {
-        if (capabilityFileContent.get(SET) != null && capabilityFileContent.get(SET)[type] != null) {
-            return capabilityFileContent.get(SET)[type] as List
-        } else if (capabilityFileContent.get(DEFAULTS) != null && capabilityFileContent.get(DEFAULTS)[type] != null) {
-            List typeDefault = []
-            typeDefault.add(capabilityFileContent.get(DEFAULTS)[type])
-            typeDefault
+     */
+    private static List getCapabilitiesForType(LazyMap capabilityFileContent, String type) {
+        def capabilities
+        if (capabilityFileContent != null && !capabilityFileContent.isEmpty()) {
+            capabilities = capabilityFileContent.get(CAPABILITIES)
+        }
+        if (capabilities != null && capabilities[type] != null) {
+            return capabilities[type] as List
         } else {
-            [[:]]
+            return []
         }
     }
 
@@ -102,29 +218,29 @@ class CapabilityParser {
      * @param capabilities - capability file content
      * @param extraCapabilities - parameters to add to every capability
      * @return list of capabilities
-     * */
-    static List getCapabilitiesList(List capabilities, LazyMap extraCapabilities) {
+     */
+    private static List getCapabilitiesList(List capabilities, LazyMap extraCapabilities) {
         List capabilitiesSet
         try {
             capabilitiesSet = capabilities != null ? capabilities : []
-            capabilitiesSet.each { Capabilities capabilitiesObject ->
-                capabilitiesObject.addCapabilitiesToAll(extraCapabilities)
+            capabilitiesSet.each { capabilitiesObject ->
+                (capabilitiesObject as Capabilities).addCapabilitiesToAll(extraCapabilities)
             }
         } catch (all) {
             LOG.debug(all.message, all)
             throw new CifyPluginException("Cannot get capabilitiesList from map cause: " + all.message)
         }
-        capabilitiesSet
+        return capabilitiesSet
     }
 
     /**
-     * Gets capability file content
+     * Gets capability file content as a map
      *
-     * @param capabilitiesFilePath
-     * @return List
-     * */
-    static LazyMap getCapabilitiesFromFile(String capabilitiesFilePath) {
-        LazyMap capabilitiesMap = [:]
+     * @param capabilitiesFilePath the path to a file
+     * @return {@link LazyMap} of json file content
+     */
+    private static LazyMap getCapabilitiesFromFile(String capabilitiesFilePath) {
+        LazyMap capabilitiesMap = new LazyMap()
         try {
             if (capabilitiesFilePath.startsWith("http://")
                     || capabilitiesFilePath.startsWith("https://")) {
@@ -132,7 +248,7 @@ class CapabilityParser {
                 capabilitiesMap = readFromContent(capabilitiesFilePath.toURL().text) as LazyMap
             } else {
                 LOG.info("Reading capability content from File")
-                File capabilitiesFile = new File(capabilitiesFilePath);
+                File capabilitiesFile = new File(capabilitiesFilePath)
                 if (capabilitiesFile.exists()) {
                     LOG.debug("Found capabilities file with name: " + capabilitiesFile.getName())
                     capabilitiesMap = readFromContent(capabilitiesFile.text) as LazyMap
@@ -144,7 +260,7 @@ class CapabilityParser {
             LOG.debug(all.message, all)
             throw new CifyPluginException("Parsing capabilities file content failed with message: " + all.message)
         }
-        capabilitiesMap
+        return capabilitiesMap
     }
 
     /**
@@ -152,36 +268,16 @@ class CapabilityParser {
      *
      * @param text - capabilities file content in string format
      * @return LazyMap with capabilities
-     * */
-    static Object readFromContent(String text) {
+     */
+    private static Object readFromContent(String text) {
         try {
             JsonSlurper jsonParser = new JsonSlurper()
             def content = jsonParser.parseText(text)
             LOG.info("Read capability file with content: " + content)
-            content
+            return content
         } catch (all) {
             LOG.debug(all.message, all)
             throw new CifyPluginException("Cannot read capability file content cause: " + all.message)
         }
-    }
-
-    /**
-     * Gets external parameters for desired capabilities
-     *
-     * @return map of capabilities
-     * */
-    static LazyMap parseExtraCapabilities(String extraCapabilities) {
-
-        LazyMap result
-
-        if (extraCapabilities.isEmpty()) {
-            result = [:]
-        } else {
-            result = extraCapabilities.split('&').inject([:]) { map, token ->
-                token.split('=').with { map[it[0]] = it[1] }
-                map
-            } as LazyMap
-        }
-        result
     }
 }

@@ -48,7 +48,6 @@ class PluginExtensionManager {
         setFeatureDirs()
         setCapabilitiesFilePath()
         setFarmUrl()
-        setExtraCapabilities()
         setCommandLineCapabilities()
         setCredentials()
         setRerunFailedTests()
@@ -283,21 +282,6 @@ class PluginExtensionManager {
     }
 
     /**
-     * Sets capabilities to every capability in list
-     * */
-    private void setExtraCapabilities() {
-        String value = getValue("extraCapabilities")
-        if (!value.isEmpty()) {
-            value.split('&').each {
-                if (!(it ==~ /\w+=\w+/)) {
-                    throw new CifyPluginException("Wrong extraCapabilities parameter! Parameter " + it + " is invalid.")
-                }
-            }
-        }
-        project.cify.extraCapabilities = value
-    }
-
-    /**
      * Sets capabilities from command line
      * */
     private void setCommandLineCapabilities() {
@@ -351,7 +335,6 @@ class PluginExtensionManager {
     private void setCapabilities() {
         project.cify.capabilitiesSet = CapabilityParser.generateCapabilitiesList(
                 project.cify.capabilitiesFilePath.toString(),
-                project.cify.extraCapabilities.toString(),
                 project.cify.farmUrl.toString(),
                 project.cify.capabilities.toString()
         )

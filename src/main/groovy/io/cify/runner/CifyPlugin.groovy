@@ -35,7 +35,7 @@ class CifyPlugin implements Plugin<Project> {
             description = 'Parses feature files, generates and executes Cucumber tasks'
         }
 
-        project.task('help') {
+        project.task('cifyhelp') {
             group = 'Cify'
             description = 'Shows a list of available options'
 

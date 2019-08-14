@@ -69,55 +69,47 @@ Cify runner contains 4 tasks:
 
 Capabilities file is in JSON format and defines capabilities for suite. Users can pass parameters to devices with capabilities json file. 
 
-File contains two objects:
-- **defaults**
-- **set**
+File contains:
+- **capabilities**
+- **strategy**
 
-**defaults**
+**capabilities**
 
-Defaults is a optional parameter in capabilities json. User can define capabilities for 3 device categories (browser, android, iOS). If default is defined for one category then it will be added to every capability variation (if not defined in the set).
+Capabilities is a list of capabilities to test against. User can define as much capabilities for each device category as needed. If strategy is not defined, runner will create variations so that capabilities from different categories are tested with each other.
 
+**strategy**
 
-**set**
+Optionally, you can specify String **"strategy"** to define capabilities parsing strategy. Default strategy is **"variations"**.
+Possible values are defined in [CapabilitiesParser](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/CapabilityParser.groovy) and include:
+- **"all_in_one"** - capabilities parsing strategy, to put all capabilities into one [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object
+- **"one_by_one"** - capabilities parsing strategy, to put each capability into a separate [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object
+- **"variations"** - capabilities parsing strategy, that creates all possible variations of capabilities with one capability of each kind (browser, android, ios) per [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object
 
-Set is a list of capabilities to test against. User can define as much capabilities for each device category as needed. Runner will create variations that every capability is tested with every other capabilities from other category.
-
-   Valid capability file structure:
+Valid capability file structure:
 ```
 {
-  "defaults": {
-    "android": {
-      "capability": "android",
-      "version": "5.1"
-    },
-    "ios": {
-      "capability": "iphone",
-      "version": "9.3"
-    },
-    "browser": {
-      "version": "48",
-      "capability": "chrome"
-    }
-  },
-  "set": {
+  "strategy": "variations",
+  "capabilities": {
     "browser": [
       {
-        "version": "44",
-        "capability": "safari"
+        "capability": "safari",
       },
       {
-        "version": "12",
-        "capability": "opera"
+        "capability": "opera",
       },
       {
-        "version": "6.0",
-        "capability": "android"
+        "capability": "chrome",
+        "version": "74"
+      }
+    ],
+    "android": [
+      {
+        "capability": "android",
       }
     ],
     "ios": [
       {
         "capability": "ipad",
-        "version": "9.3.5"
       }
     ]
   }
@@ -126,9 +118,9 @@ Set is a list of capabilities to test against. User can define as much capabilit
 
 In this case there will be 3 different variations (tasks) to run:
 
-1. Safari 44, Android 5.1, iOS 9.3.5 on iPad
-1. Opera 12, Android 5.1, iOS 9.3.5 on iPad
-1. Android 6.0 Browser, Android 5.1, iOS 9.3.5 on iPad
+1. Safari browser, Android device, iPad
+1. Opera browser, Android device, iPad
+1. Chrome browser , Android device, iPad
 
 There is a possibility to pass capabilities from command line.
 
@@ -147,9 +139,8 @@ There are more than different configuration options in Cify Runner.
 | threads |Specify number of parallel threads. Default 1 | integers |
 | env | Environment name to use. Properties file name. Valid file name structure is env-demo.properties | demo |
 | capabilitiesFilePath | Capabilities JSON file path. Defaults to capabilities.json | capabilities file name |
-|extraCapabilities|Map of DesiredCapabilities to add to every capability in list|param=value1&param2=value2...|
 |capabilities |Desired capabilities|capabilities JSON file content|
-|farmUrl| Remote URL to every capability (all drirvers will be RemoteWebDrivers) | URL |
+|farmUrl| Remote URL to every capability (all drivers will be RemoteWebDrivers) | URL |
 |gluePackages|Set a package to search step definitions from|Path to steps|
 |featureDirs|Set a package to search feature files|Path to package|
 |tags|Run features/scenarios with certain tag only|@-to include, ~@ to exclude|

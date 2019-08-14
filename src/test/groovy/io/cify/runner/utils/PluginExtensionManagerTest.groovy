@@ -24,20 +24,7 @@ class PluginExtensionManagerTest extends GroovyTestCase {
     PluginExtensionManager manager
 
     String capabilities = "{\n" +
-            "  \"defaults\": {\n" +
-            "    \"android\": {\n" +
-            "      \"version\": \"5.1\"\n" +
-            "    },\n" +
-            "    \"ios\": {\n" +
-            "      \"version\": \"9.3\"\n" +
-            "    },\n" +
-            "    \"browser\": {\n" +
-            "      \"version\": \"48\",\n" +
-            "      \"type\": \"chrome\"\n" +
-            "    }\n" +
-            "  },\n" +
-            "\n" +
-            "  \"set\": {\n" +
+            "  \"capabilities\": {\n" +
             "    \"browser\": [\n" +
             "      {\n" +
             "        \"version\": \"44\",\n" +
@@ -164,10 +151,7 @@ class PluginExtensionManagerTest extends GroovyTestCase {
 
     void testWithMissingCapabilitiesFile() {
         List<Capabilities> capabilitiesSet = project.cify.capabilitiesSet
-        assert capabilitiesSet.size() == 1
-        assert capabilitiesSet.first().getAndroid().isEmpty()
-        assert capabilitiesSet.first().getIos().isEmpty()
-        assert capabilitiesSet.first().getBrowser().isEmpty()
+        assert capabilitiesSet.size() == 0
     }
 
     void testWithCapabilities() {
@@ -183,29 +167,17 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         project.cify.capabilitiesSet.size() == 3
     }
 
-    void testExternalParametersForCapability() {
-        capabilitiesFile.write(capabilities)
-        project.ext.set("capabilitiesFilePath", capabilitiesFile.getPath())
-        project.ext.set("extraCapabilities", "test=test1Value&test2=test2Value")
-        manager.setupParameters()
-        List capabilitiesSet = project.cify.capabilitiesSet
-        capabilitiesSet.each { Capabilities capabilities ->
-            assert capabilities.getAndroid().get("test") == "test1Value"
-            assert capabilities.getAndroid().get("test2") == "test2Value"
-            assert capabilities.getIos().get("test") == "test1Value"
-            assert capabilities.getIos().get("test2") == "test2Value"
-            assert capabilities.getBrowser().get("test") == "test1Value"
-            assert capabilities.getBrowser().get("test2") == "test2Value"
-        }
-    }
-
     void testWithRemoteUrl() {
         project.ext.set("farmUrl", "https://www.fob-solutions.com")
         manager.setupParameters()
 
         project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().get("remote") == "https://www.fob-solutions.com"
-            capabilities.getAndroid().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getBrowser().each {
+                it.get("remote") == "https://www.fob-solutions.com"
+            }
+            capabilities.getAndroid().each {
+                it.get("remote") == "https://www.fob-solutions.com"
+            }
 
         }
     }
@@ -216,8 +188,12 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         project.ext.set("farmUrl", "https://www.fob-solutions.com")
         manager.setupParameters()
         project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().get("remote") == "https://www.fob-solutions.com"
-            capabilities.getAndroid().get("remote") == "https://www.fob-solutions.com"
+            capabilities.getBrowser().each {
+                it.get("remote") == "https://www.fob-solutions.com"
+            }
+            capabilities.getAndroid().each {
+                it.get("remote") == "https://www.fob-solutions.com"
+            }
         }
     }
 
@@ -297,21 +273,6 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         }
         shouldFail {
             project.ext.set("farmUrl", "www.here.ee")
-            manager.setupParameters()
-        }
-    }
-
-    void testValidateExtraCapabilitiesParameter() {
-        shouldFail {
-            project.ext.set("extraCapabilities", "param1:value1&param2:value2")
-            manager.setupParameters()
-        }
-        shouldFail {
-            project.ext.set("extraCapabilities", "param1=value1,param2=value2")
-            manager.setupParameters()
-        }
-        shouldFail {
-            project.ext.set("extraCapabilities", "param1=value1&param2=")
             manager.setupParameters()
         }
     }

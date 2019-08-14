@@ -82,7 +82,7 @@ class TaskPoolManager {
             LOG.debug(MARKER, "Number of threads: " + threadCount)
 
             if (isReporting() && tasksPool.size() > 0) {
-                def params = [:]
+                HashMap<String, String> params = [:]
                 params.putAll(tasksPool.last().taskParams as Map)
                 params.put('suiteFinished', 'true')
                 addTask('endTask', tasksPool.last().getClass(), params)
@@ -97,7 +97,7 @@ class TaskPoolManager {
                             it.execute()
                         }
                     } catch (all) {
-                        LOG.error(MARKER, "Failed to run task " + it.name + ". Cause: " + all.message)
+                        LOG.error(MARKER, "Failed to run task ${it.name}. Cause: ${all.message}")
                         failedTasks.add(it)
                     }
                 }
@@ -105,7 +105,7 @@ class TaskPoolManager {
                     try {
                         tasksPool.find { it.taskParams['suiteFinished'] == 'true' }?.execute()
                     } catch (all) {
-                        LOG.error(MARKER, "Failed to run end of suite task " + it.name + ". Cause: " + all.message)
+                        LOG.error(MARKER, "Failed to run end of suite task ${it.name}. Cause: ${all.message}")
                     }
                 }
 
