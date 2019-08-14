@@ -3,10 +3,9 @@ plugins {
 }
 
 group 'io.cify'
-version '1.4.1'
+version '1.4.2'
 
 apply plugin: 'groovy'
-apply plugin: 'java-gradle-plugin'
 apply plugin: 'maven-publish'
 
 repositories {
@@ -14,12 +13,15 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.6.2'
-    compile group: 'org.codehaus.gpars', name: 'gpars', version: '1.1.0'
-    compile group: 'info.cukes', name: 'gherkin', version: '2.12.2'
-    compile group: 'commons-validator', name: 'commons-validator', version: '1.5.1'
+    compile localGroovy()
+    compile gradleApi()
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'org.apache.logging.log4j:log4j-core:2.12.1'
+    compile 'org.codehaus.gpars:gpars:1.1.0'
+    compile 'info.cukes:gherkin:2.12.2'
+    compile 'commons-validator:commons-validator:1.6'
+
+    testCompile 'junit:junit:4.12'
 }
 
 publishing {
