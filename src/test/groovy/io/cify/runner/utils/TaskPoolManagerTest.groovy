@@ -29,7 +29,7 @@ class TaskPoolManagerTest extends GroovyTestCase {
 
     void tearDown() {
         project.tasks.clear()
-        TestTask.threadsNames.clear()
+        TestTask.threadIds.clear()
         TestTask.count = 0
     }
 
@@ -57,19 +57,24 @@ class TaskPoolManagerTest extends GroovyTestCase {
     void testRunInParallel() {
         addTestTasks(10)
         taskPoolManager.runTasksInParallel(THREADCOUNT)
-
-        assert TestTask.threadsNames.size() == THREADCOUNT
+        runWithTimeout(500, 20) {
+            assert TestTask.threadIds.size() == THREADCOUNT
+        }
     }
 
     void testRunCount() {
         addTestTasks(10)
         taskPoolManager.runTasksInParallel(1)
-        assert TestTask.count == taskPoolManager.tasksPool.size()
+        runWithTimeout(500, 2) {
+            assert TestTask.count == taskPoolManager.tasksPool.size()
+        }
     }
 
     void testEmptyTaskPool() {
         taskPoolManager.runTasksInParallel(THREADCOUNT)
-        assert TestTask.threadsNames.isEmpty()
+        runWithTimeout(500, 2) {
+            assert TestTask.threadIds.isEmpty()
+        }
     }
 
     void testTaskPoolWithNegativeThreadsCount() {
@@ -85,6 +90,23 @@ class TaskPoolManagerTest extends GroovyTestCase {
 
         addFailingTask(2)
         taskPoolManager.runTasksInParallel(2)
+    }
+
+    /**
+     * Runs assertion closure several times (in case assertion fails) with timeout between tries
+     */
+    private static void runWithTimeout(long milliseconds, int tryCount, Closure assertion) {
+        for (i in 1..tryCount) {
+            sleep(milliseconds)
+            try {
+                assertion.run()
+                return
+            } catch (AssertionError error) {
+                if (i == tryCount) {
+                    throw error
+                }
+            }
+        }
     }
 
     /**
@@ -111,7 +133,7 @@ class TaskPoolManagerTest extends GroovyTestCase {
  * */
 class TestTask extends DefaultTask {
 
-    static List threadsNames = new ArrayList()
+    static List threadIds = new ArrayList()
     static int count = 0
     Map<String, String> taskParams = new HashMap<>()
 
@@ -119,8 +141,10 @@ class TestTask extends DefaultTask {
     void exec() {
         ++count
 
-        String name = Thread.currentThread().getName()
-        if (!threadsNames.contains(name)) threadsNames.add(name)
+        long id = Thread.currentThread().getId()
+        if (!threadIds.contains(id)) {
+            threadIds.add(id)
+        }
 
         if (taskParams['fail'] == "true") {
             throw new CifyPluginException("Task failed")
