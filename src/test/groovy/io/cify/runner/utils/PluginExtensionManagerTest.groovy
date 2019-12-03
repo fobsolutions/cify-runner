@@ -1,5 +1,7 @@
 package io.cify.runner.utils
 
+import io.cify.common.CifyConstants
+import io.cify.common.capability.conf.CapabilityConfig
 import io.cify.runner.CifyPlugin
 import io.cify.runner.CifyPluginExtension
 import org.gradle.api.Project
@@ -16,6 +18,7 @@ class PluginExtensionManagerTest extends GroovyTestCase {
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
     private File propertiesFile
     private File capabilitiesFile
+    private File capabilitiesFile1
     private File fileWithMode
 
     Project project
@@ -47,18 +50,33 @@ class PluginExtensionManagerTest extends GroovyTestCase {
             "  }\n" +
             "}"
 
+    String capabilities1 = "{\n" +
+            "  \"capabilities\": {\n" +
+            "    \"browser\": [\n" +
+            "      {\n" +
+            "        \"version\": \"12\",\n" +
+            "        \"type\": \"opera\"\n" +
+            "      }\n" +
+            "    ]\n" +
+            "  }\n" +
+            "}"
+
     void setUp() {
+        testProjectDir.create()
+        propertiesFile = testProjectDir.newFile("env-test.envProperties")
+        capabilitiesFile = testProjectDir.newFile(CifyConstants.CIFY_CONFIG_FILE_NAME)
+        capabilitiesFile1 = testProjectDir.newFile("capabilities1.json")
+        capabilitiesFile.write(capabilities)
+        fileWithMode = testProjectDir.newFile("fileWithMode.json")
+
         CifyPlugin plugin = new CifyPlugin()
         project = ProjectBuilder.builder().build()
+        project.ext.set("capabilitiesFilePath", capabilitiesFile.absolutePath)
         plugin.apply(project)
         manager = new PluginExtensionManager(project)
         manager.setupParameters()
         extension = project.cify
         defaultExtension = new CifyPluginExtension()
-        testProjectDir.create()
-        propertiesFile = testProjectDir.newFile("env-test.envProperties")
-        capabilitiesFile = testProjectDir.newFile(extension.capabilitiesFilePath)
-        fileWithMode = testProjectDir.newFile("fileWithMode.json")
     }
 
     void testGetDefaultFeatureDir() {
@@ -150,15 +168,17 @@ class PluginExtensionManagerTest extends GroovyTestCase {
     }
 
     void testWithMissingCapabilitiesFile() {
-        List<Capabilities> capabilitiesSet = project.cify.capabilitiesSet
-        assert capabilitiesSet.size() == 0
+        project.ext.set("capabilitiesFilePath", "someNonExistingFile.json")
+        shouldFail {
+            manager.setupParameters()
+        }
     }
 
     void testWithCapabilities() {
-        capabilitiesFile.write(capabilities)
-        project.ext.set("capabilitiesFilePath", capabilitiesFile.getPath())
+        capabilitiesFile1.write(capabilities1)
+        project.ext.set("capabilitiesFilePath", capabilitiesFile1.getPath())
         manager.setupParameters()
-        assert project.cify.capabilitiesSet.size() == 3
+        assert project.cify.capabilitiesSet.size() == 1
     }
 
     void testCapabilitiesFromCommandLine() {
@@ -171,28 +191,28 @@ class PluginExtensionManagerTest extends GroovyTestCase {
         project.ext.set("farmUrl", "https://www.fob-solutions.com")
         manager.setupParameters()
 
-        project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().each {
-                it.get("remote") == "https://www.fob-solutions.com"
+        project.cify.capabilitiesSet.each { CapabilityConfig capabilityConfig ->
+            capabilityConfig.getBrowserConfigs().each {
+                it.getCapabilities().get("remote") == "https://www.fob-solutions.com"
             }
-            capabilities.getAndroid().each {
-                it.get("remote") == "https://www.fob-solutions.com"
+            capabilityConfig.getAndroidConfigs().each {
+                it.getCapabilities().get("remote") == "https://www.fob-solutions.com"
             }
 
         }
     }
 
     void testWithCapabilityWithRemoteAndRemoteParam() {
-        capabilitiesFile.write(capabilities)
-        project.ext.set("capabilitiesFilePath", capabilitiesFile.getPath())
+        capabilitiesFile1.write(capabilities1)
+        project.ext.set("capabilitiesFilePath", capabilitiesFile1.getPath())
         project.ext.set("farmUrl", "https://www.fob-solutions.com")
         manager.setupParameters()
-        project.cify.capabilitiesSet.each { Capabilities capabilities ->
-            capabilities.getBrowser().each {
-                it.get("remote") == "https://www.fob-solutions.com"
+        project.cify.capabilitiesSet.each { CapabilityConfig capabilityConfig ->
+            capabilityConfig.getBrowserConfigs().each {
+                it.getCapabilities().get("remote") == "https://www.fob-solutions.com"
             }
-            capabilities.getAndroid().each {
-                it.get("remote") == "https://www.fob-solutions.com"
+            capabilityConfig.getAndroidConfigs().each {
+                it.getCapabilities().get("remote") == "https://www.fob-solutions.com"
             }
         }
     }
@@ -249,17 +269,9 @@ class PluginExtensionManagerTest extends GroovyTestCase {
 
     void testValidateCapabilitiesFilePathParameter() {
         project.ext.set("capabilitiesFilePath", defaultExtension.capabilitiesFilePath)
+        project.ext.set("capabilities", "{'capabilities':{}}")
         manager.setupParameters()
         assert manager.getValue("capabilitiesFilePath") == defaultExtension.capabilitiesFilePath
-
-        shouldFail {
-            project.ext.set("capabilitiesFilePath", "src/testtt/resources/caps.json")
-            manager.setupParameters()
-        }
-        shouldFail {
-            project.ext.set("capabilitiesFilePath", "src/test/resources")
-            manager.setupParameters()
-        }
     }
 
     void testValidateRemoteUrlParameter() {

@@ -1,5 +1,7 @@
 package io.cify.runner
 
+import io.cify.common.CifyConstants
+
 /**
  * Parameters used in the Cify plugin.
  *
@@ -55,7 +57,7 @@ class CifyPluginExtension {
     /**
      * Capabilities file path. Defaults to capabilities.json
      * */
-    String capabilitiesFilePath = "capabilities.json"
+    String capabilitiesFilePath = CifyConstants.CIFY_CONFIG_FILE_NAME
 
     /**
      * Remote URL for device farms, if set then used in RemoteWebDriver. Defaults to empty string

@@ -46,7 +46,7 @@ class CifyPlugin implements Plugin<Project> {
 
         project.task('cloneDeviceFarm', type: Exec) {
             group = 'Cify'
-            description 'Pulls device farm from GitHub into devicefarm directory'
+            description = 'Pulls device farm from GitHub into devicefarm directory'
             commandLine "git", "clone", "https://github.com/fobsolutions/cify-device-farm", "devicefarm"
         }
     }

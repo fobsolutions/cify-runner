@@ -2,6 +2,8 @@ package io.cify.runner.utils
 
 import groovy.json.JsonException
 import groovy.json.JsonSlurper
+import io.cify.common.capability.parse.CapabilityParser
+import io.cify.common.io.FileIO
 import org.apache.commons.validator.routines.UrlValidator
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
@@ -261,11 +263,12 @@ class PluginExtensionManager {
      * */
     private void setCapabilitiesFilePath() {
         String value = getValue('capabilitiesFilePath')
-        if (value == project.extensions.getByName('cify').getProperties().get("capabilitiesFilePath")) {
-            return
-        }
-        if (!new File(value).exists() || new File(value).isDirectory()) {
-            throw new CifyPluginException("Filename " + value + " does not exist, or there is a directory with same name.")
+        File file = new File(value)
+        if (file.exists()) {
+            if (file.isDirectory()) {
+                throw new CifyPluginException("Filename " + value + " is a directory.")
+            }
+            value = file.absolutePath
         }
         project.cify.capabilitiesFilePath = value
     }
@@ -333,10 +336,14 @@ class PluginExtensionManager {
      * Sets capabilities to current run
      * */
     private void setCapabilities() {
-        project.cify.capabilitiesSet = CapabilityParser.generateCapabilitiesList(
-                project.cify.capabilitiesFilePath.toString(),
+        String config = project.cify.capabilities.toString()
+        if (!config) {
+            config = FileIO.read(project.cify.capabilitiesFilePath.toString())
+        }
+
+        project.cify.capabilitiesSet = new CapabilityParser().parse(
+                config,
                 project.cify.farmUrl.toString(),
-                project.cify.capabilities.toString()
         )
     }
 

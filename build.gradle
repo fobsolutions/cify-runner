@@ -3,12 +3,13 @@ plugins {
 }
 
 group 'io.cify'
-version '1.4.2'
+version '2.0.0'
 
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -20,6 +21,7 @@ dependencies {
     compile 'org.codehaus.gpars:gpars:1.1.0'
     compile 'info.cukes:gherkin:2.12.2'
     compile 'commons-validator:commons-validator:1.6'
+    compile 'io.cify:cify-common:1.0.0'
 
     testCompile 'junit:junit:4.12'
 }

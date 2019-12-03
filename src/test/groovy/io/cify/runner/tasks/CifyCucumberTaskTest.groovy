@@ -14,14 +14,15 @@ class CifyCucumberTaskTest extends GroovyTestCase {
     Project project
 
     CifyPluginExtension extension
-    PluginExtensionManager parser
+    PluginExtensionManager manager
 
     void setUp() {
         CifyPlugin plugin = new CifyPlugin()
         project = ProjectBuilder.builder().build()
+        project.ext.set("capabilities", "{'capabilities':{}}")
         plugin.apply(project)
-        parser = new PluginExtensionManager(project)
-        parser.setupParameters()
+        manager = new PluginExtensionManager(project)
+        manager.setupParameters()
         extension = project.cify
 
         cucumberTask = project.task('cucumberTask', type: CifyCucumberTask) as CifyCucumberTask

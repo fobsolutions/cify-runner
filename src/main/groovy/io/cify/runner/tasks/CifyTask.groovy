@@ -1,6 +1,6 @@
 package io.cify.runner.tasks
 
-import io.cify.runner.utils.Capabilities
+import io.cify.common.capability.conf.CapabilityConfig
 import io.cify.runner.utils.TaskPoolManager
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
@@ -35,16 +35,16 @@ class CifyTask extends DefaultTask {
                 String featurePath = featureFile.path.replace(project.rootDir.toString() + '/', '')
                 String featureName = featureFile.name
 
-                capabilitiesSet.each { Capabilities capabilities ->
+                capabilitiesSet.each { CapabilityConfig capabilityConfig ->
 
                     for (int i = 0; i < repeatCount; i++) {
-                        String taskName = featureName + "_" + capabilities.toString() + "_" + i
+                        String taskName = featureName + "_" + capabilityConfig.toString() + "_" + i
 
                         Map params = [:]
                         params.put('taskName', taskName)
                         params.put('featurePath', featurePath)
-                        params.put('capabilities', capabilities)
-                        params.put('capabilitiesId', capabilities.toString())
+                        params.put('capabilities', capabilityConfig)
+                        params.put('capabilitiesId', capabilityConfig.toString())
                         params.put('videoRecord', videoRecord)
                         params.put('videoDir', videoDir)
                         params.put('credentials', credentials)
