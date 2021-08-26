@@ -1,4 +1,3 @@
-[ ![Download](https://api.bintray.com/packages/fobsolutions/io.cify/cify-runner/images/download.svg) ](https://bintray.com/fobsolutions/io.cify/cify-runner/_latestVersion)
 
 1. <a href="#what">What Is Cify Runner?</a>
 1. <a href="#usage">How To Use Cify Runner</a>
@@ -21,12 +20,12 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "http://fobsolutions.bintray.com/io.cify"
+            url = 'https://cify-artifacts.s3.eu-central-1.amazonaws.com'
         }
     }
     dependencies {
         // Check the latest version above
-        classpath('io.cify:cify-runner:1.2.5')
+        classpath('io.cify:cify-runner:1.4.2')
     }
 }
 
