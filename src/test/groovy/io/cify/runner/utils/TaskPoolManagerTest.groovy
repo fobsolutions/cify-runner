@@ -28,7 +28,8 @@ class TaskPoolManagerTest extends GroovyTestCase {
     }
 
     void tearDown() {
-        project.tasks.clear()
+        project.tasks.forEach({it.enabled = false})
+        taskPoolManager.tasksPool.clear()
         TestTask.threadIds.clear()
         TestTask.count = 0
     }
@@ -55,7 +56,7 @@ class TaskPoolManagerTest extends GroovyTestCase {
     }
 
     void testRunInParallel() {
-        addTestTasks(10)
+        addTestTasks(1000)
         taskPoolManager.runTasksInParallel(THREADCOUNT)
         runWithTimeout(500, 20) {
             assert TestTask.threadIds.size() == THREADCOUNT
@@ -138,7 +139,7 @@ class TestTask extends DefaultTask {
     Map<String, String> taskParams = new HashMap<>()
 
     @TaskAction
-    void exec() {
+    void execute() {
         ++count
 
         long id = Thread.currentThread().getId()

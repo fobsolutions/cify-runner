@@ -1,6 +1,6 @@
 package io.cify.runner.utils
 
-import groovy.json.internal.LazyMap
+import org.apache.groovy.json.internal.LazyMap
 
 import static io.cify.runner.utils.CapabilityParser.ANDROID
 import static io.cify.runner.utils.CapabilityParser.BROWSER

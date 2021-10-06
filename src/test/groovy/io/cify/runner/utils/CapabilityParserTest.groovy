@@ -1,8 +1,8 @@
 package io.cify.runner.utils
 
-import groovy.json.internal.LazyMap
 import io.cify.runner.CifyPlugin
 import io.cify.runner.CifyPluginExtension
+import org.apache.groovy.json.internal.LazyMap
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
