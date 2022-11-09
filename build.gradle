@@ -32,18 +32,3 @@ publishing {
         }
     }
 }
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.bintrayUser : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.bintrayApiKey : System.getenv('BINTRAY_KEY')
-    publish = true
-    override = false
-    publications = ['mavenJava']
-    pkg {
-        repo = group
-        name = 'cify-runner'
-        userOrg = 'fobsolutions'
-        vcsUrl = 'https://github.com/fobsolutions/cify-runner'
-        licenses = ['Apache-2.0']
-    }
-}
