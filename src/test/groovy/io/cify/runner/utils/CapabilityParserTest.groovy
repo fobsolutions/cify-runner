@@ -1,6 +1,6 @@
 package io.cify.runner.utils
 
-import groovy.json.internal.LazyMap
+import org.apache.groovy.json.internal.LazyMap
 import io.cify.runner.CifyPlugin
 import io.cify.runner.CifyPluginExtension
 import org.gradle.api.Project
@@ -8,12 +8,12 @@ import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Rule
 import org.junit.rules.TemporaryFolder
 
-import static io.cify.runner.utils.CapabilityParser.*
+import static io.cify.runner.utils.CapabilityParserNew.*
 
 /**
  * Created by FOB Solutions
  */
-class CapabilityParserTest extends GroovyTestCase {
+class CapabilityParserNewTest extends GroovyTestCase {
     @Rule
     public final TemporaryFolder testProjectDir = new TemporaryFolder()
     private File capabilitiesFile

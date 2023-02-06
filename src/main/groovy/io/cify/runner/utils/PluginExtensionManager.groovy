@@ -333,11 +333,12 @@ class PluginExtensionManager {
      * Sets capabilities to current run
      * */
     private void setCapabilities() {
-        project.cify.capabilitiesSet = CapabilityParser.generateCapabilitiesList(
-                project.cify.capabilitiesFilePath.toString(),
-                project.cify.farmUrl.toString(),
-                project.cify.capabilities.toString()
-        )
+        CapabilityParserNew.wtf()
+        // project.cify.capabilitiesSet = CapabilityParserNew.generateCapabilitiesList(
+        //         project.cify.capabilitiesFilePath.toString(),
+        //         project.cify.farmUrl.toString(),
+        //         project.cify.capabilities.toString()
+        // )
     }
 
     /**

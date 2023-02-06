@@ -94,7 +94,7 @@ class TaskPoolManager {
                 tasksPool.eachParallel {
                     try {
                         if (it.taskParams['suiteFinished'] != "true") {
-                            it.execute()
+                            it.exec()
                         }
                     } catch (all) {
                         LOG.error(MARKER, "Failed to run task ${it.name}. Cause: ${all.message}")
@@ -103,7 +103,7 @@ class TaskPoolManager {
                 }
                 if (isReporting() && failedTasks.isEmpty() || !project.cify.rerunFailedTests) {
                     try {
-                        tasksPool.find { it.taskParams['suiteFinished'] == 'true' }?.execute()
+                        tasksPool.find { it.taskParams['suiteFinished'] == 'true' }?.exec()
                     } catch (all) {
                         LOG.error(MARKER, "Failed to run end of suite task ${it.name}. Cause: ${all.message}")
                     }
@@ -121,7 +121,7 @@ class TaskPoolManager {
                     failedTasks.eachParallel {
                         try {
                             if (it.taskParams['suiteFinished'] != "true") {
-                                it.execute()
+                                it.exec()
                             }
                         } catch (all) {
                             LOG.error(MARKER, "Re-running for task $it.name failed cause $all")
@@ -129,7 +129,7 @@ class TaskPoolManager {
                     }
                     if (isReporting()) {
                         try {
-                            failedTasks.find { it.taskParams['suiteFinished'] == 'true' }?.execute()
+                            failedTasks.find { it.taskParams['suiteFinished'] == 'true' }?.exec()
                         } catch (all) {
                             LOG.error(MARKER, "Re-running failed tasks finished. Failed to run end of suite task. Cause: " + all.message)
                         }

@@ -79,7 +79,7 @@ Capabilities is a list of capabilities to test against. User can define as much 
 **strategy**
 
 Optionally, you can specify String **"strategy"** to define capabilities parsing strategy. Default strategy is **"variations"**.
-Possible values are defined in [CapabilitiesParser](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/CapabilityParser.groovy) and include:
+Possible values are defined in [CapabilitiesParser](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/CapabilityParserNew.groovy) and include:
 - **"all_in_one"** - capabilities parsing strategy, to put all capabilities into one [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object
 - **"one_by_one"** - capabilities parsing strategy, to put each capability into a separate [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object
 - **"variations"** - capabilities parsing strategy, that creates all possible variations of capabilities with one capability of each kind (browser, android, ios) per [Capabilities](https://github.com/fobsolutions/cify-runner/blob/master/src/main/groovy/io/cify/runner/utils/Capabilities.groovy) object

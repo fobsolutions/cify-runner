@@ -1,7 +1,7 @@
 package io.cify.runner.utils
 
 import groovy.json.JsonSlurper
-import groovy.json.internal.LazyMap
+import org.apache.groovy.json.internal.LazyMap
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.core.Logger
 
@@ -10,7 +10,7 @@ import org.apache.logging.log4j.core.Logger
  *
  * Created by FOB Solutions
  */
-class CapabilityParser {
+class CapabilityParserNew {
     /**
      * Capabilities parsing strategy, to put all capabilities into one {@link Capabilities} object
      */
@@ -39,6 +39,10 @@ class CapabilityParser {
      *
      * @return list of capabilities
      */
+
+    static void wtf() {
+        LOG.debug("###WTF")
+    }
     static List<Capabilities> generateCapabilitiesList(String capabilitiesFilePath, String farmUrl, String capabilitiesFromCmd) {
         LazyMap capabilitiesContent
 
